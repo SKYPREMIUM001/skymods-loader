@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKY X R4X - Admin Dashboard (Firebase Live)</title>
-
-    <!-- Firebase SDK (Compat Version) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
+    <title>SKY X R4X - Admin Dashboard</title>
     <style>
         :root {
             --bg-main: #0a0e17;
@@ -72,7 +67,6 @@
             font-weight: bold;
         }
 
-        /* Top Navigation Tabs */
         .nav-tabs {
             display: flex;
             gap: 10px;
@@ -172,7 +166,11 @@
             background-color: var(--primary-hover);
         }
 
-        /* Success Alert Card for Generated Key */
+        .btn-main:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .generated-box {
             display: none;
             background: rgba(0, 229, 255, 0.08);
@@ -192,7 +190,6 @@
             word-break: break-all;
         }
 
-        /* Table & Management Styling */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -298,7 +295,6 @@
             border: 1px solid var(--danger);
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -334,18 +330,17 @@
         <header>
             <div class="logo">
                 <h1>SKY X R4X</h1>
-                <span>Key Management Portal (Firebase Connected)</span>
+                <span>Key Management Portal (REST Live)</span>
             </div>
             <div class="badge-credit">Credits: ∞ (Unlimited)</div>
         </header>
 
-        <!-- Navigation Tabs -->
         <div class="nav-tabs">
             <button class="nav-btn active" id="tabHomeBtn" onclick="switchTab('home')">🏠 Home (Generator)</button>
             <button class="nav-btn" id="tabManageBtn" onclick="switchTab('manage')">📋 Key Management</button>
         </div>
 
-        <!-- ================= TAB 1: HOME (KEY GENERATOR) ================= -->
+        <!-- ================= TAB 1: HOME ================= -->
         <div id="homeSection">
             <div class="card">
                 <div class="card-title">Generate New License Key</div>
@@ -389,23 +384,25 @@
                     </div>
                 </div>
 
-                <button class="btn-main" onclick="generateKey()">+ Generate & Save to Firebase</button>
+                <button class="btn-main" id="generateBtn" onclick="generateKey()">+ Generate & Save to Firebase</button>
 
-                <!-- Box showing generated key with instant copy -->
                 <div class="generated-box" id="generatedResultBox">
-                    <span style="font-size: 13px; color: var(--text-dim);">New Key Created in Firebase for: <b id="displayCustomer" style="color:#fff;"></b></span>
+                    <span style="font-size: 13px; color: var(--text-dim);">New Key Created for: <b id="displayCustomer" style="color:#fff;"></b></span>
                     <div class="generated-key-display" id="displayGeneratedKey"></div>
                     <button class="btn-copy" style="padding: 9px 18px; font-weight: bold;" onclick="copyText(document.getElementById('displayGeneratedKey').innerText)">📋 Copy Key</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 2: KEY MANAGEMENT ================= -->
+        <!-- ================= TAB 2: MANAGEMENT ================= -->
         <div id="manageSection" style="display: none;">
             <div class="card">
                 <div class="card-title">
-                    <span>Manage Active Customers & Keys (Live from Firebase)</span>
-                    <span id="totalKeysCount" style="font-size: 13px; color: var(--primary);">0 Total Keys</span>
+                    <span>Active Licenses & Customers</span>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="btn-copy" onclick="fetchLiveKeys()">🔄 Refresh</button>
+                        <span id="totalKeysCount" style="font-size: 13px; color: var(--primary);">0 Keys</span>
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -421,7 +418,7 @@
                             </tr>
                         </thead>
                         <tbody id="keyTableBody">
-                            <!-- Realtime Firebase Data Populated Here -->
+                            <tr><td colspan="7" style="text-align:center; color: var(--text-dim); padding: 20px;">Loading keys...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -429,7 +426,7 @@
         </div>
     </div>
 
-    <!-- Edit/Extend Days Modal -->
+    <!-- Edit/Extend Modal -->
     <div class="modal" id="editModal">
         <div class="modal-content">
             <h3 style="margin-bottom: 12px; font-size: 17px;">Extend Days for Customer</h3>
@@ -440,32 +437,17 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-action" style="background:#24314c; color:#fff;" onclick="closeModal()">Cancel</button>
-                <button class="btn-action" style="background:var(--primary); color:#000;" onclick="saveExtendedDays()">Add Days</button>
+                <button class="btn-action" id="modalSaveBtn" style="background:var(--primary); color:#000;" onclick="saveExtendedDays()">Add Days</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ================= FIREBASE INITIALIZATION =================
-        const firebaseConfig = {
-            apiKey: "AIzaSyCYo02Tb2mDKIm_x2zi3bS41-jztg6O3lQ",
-            authDomain: "skymodsloader.firebaseapp.com",
-            databaseURL: "https://skymodsloader-default-rtdb.firebaseio.com",
-            projectId: "skymodsloader",
-            storageBucket: "skymodsloader.firebasestorage.app",
-            messagingSenderId: "455679015553",
-            appId: "1:455679015553:web:7ef67519adca5e07baeb80",
-            measurementId: "G-LRZGVXG20Q"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const keysRef = db.ref("keys");
-
+        // Direct Firebase Realtime Database REST URL
+        const FIREBASE_BASE = "https://skymodsloader-default-rtdb.firebaseio.com/keys";
         let liveKeysList = [];
         let activeEditKey = null;
 
-        // Tab Switching
         function switchTab(tab) {
             const homeSec = document.getElementById("homeSection");
             const manageSec = document.getElementById("manageSection");
@@ -482,7 +464,7 @@
                 manageSec.style.display = "block";
                 tabHomeBtn.classList.remove("active");
                 tabManageBtn.classList.add("active");
-                renderKeys();
+                fetchLiveKeys();
             }
         }
 
@@ -497,7 +479,7 @@
 
         function copyText(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert("Key copied to clipboard: " + text);
+                alert("Key copied: " + text);
             }).catch(() => {
                 const tempInput = document.createElement("input");
                 tempInput.value = text;
@@ -505,22 +487,46 @@
                 tempInput.select();
                 document.execCommand("copy");
                 document.body.removeChild(tempInput);
-                alert("Key copied to clipboard: " + text);
+                alert("Key copied: " + text);
             });
         }
 
-        // ================= FIREBASE CREATE KEY =================
-        function generateKey() {
+        // ================= DIRECT REST FETCH =================
+        async function fetchLiveKeys() {
+            try {
+                const res = await fetch(`${FIREBASE_BASE}.json`);
+                const data = await res.json();
+                liveKeysList = [];
+                if (data) {
+                    Object.keys(data).forEach(k => {
+                        if (data[k]) liveKeysList.push(data[k]);
+                    });
+                }
+                liveKeysList.reverse();
+                renderKeys();
+            } catch (err) {
+                console.error("Fetch error:", err);
+                const tbody = document.getElementById("keyTableBody");
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--danger); padding: 20px;">Failed to load keys: ${err.message}</td></tr>`;
+            }
+        }
+
+        // ================= DIRECT REST CREATE =================
+        async function generateKey() {
+            const btn = document.getElementById("generateBtn");
             const customer = document.getElementById("customerName").value.trim() || "Anonymous Customer";
             const durationDays = parseInt(document.getElementById("keyDuration").value);
             const devices = document.getElementById("keyDevices").value;
             const prefix = document.getElementById("keyPrefix").value.trim() || "SKY";
 
+            btn.disabled = true;
+            btn.innerText = "Saving to Firebase...";
+
             const now = new Date();
             let expireDate = new Date();
 
             if (durationDays === 99999) {
-                expireDate.setFullYear(expireDate.getFullYear() + 50); // Lifetime
+                expireDate.setFullYear(expireDate.getFullYear() + 50);
             } else {
                 expireDate.setDate(now.getDate() + durationDays);
             }
@@ -534,17 +540,31 @@
                 durationDays: durationDays,
                 expires_at: expireDate.toISOString(),
                 max_devices: devices,
-                bound_devices: "" // Initially empty, will bind on user login
+                bound_devices: ""
             };
 
-            // Save directly to Firebase Realtime Database
-            keysRef.child(formattedKey).set(keyData).then(() => {
+            try {
+                const res = await fetch(`${FIREBASE_BASE}/${formattedKey}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(keyData)
+                });
+
+                if (!res.ok) throw new Error("Firebase response not OK: " + res.status);
+
                 document.getElementById("displayCustomer").innerText = customer;
                 document.getElementById("displayGeneratedKey").innerText = formattedKey;
                 document.getElementById("generatedResultBox").style.display = "block";
-            }).catch(error => {
-                alert("Error saving key to Firebase: " + error.message);
-            });
+                alert("Key Generated Successfully: " + formattedKey);
+                
+                // Sync internal list
+                liveKeysList.unshift(keyData);
+            } catch (err) {
+                alert("Firebase Save Failed: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "+ Generate & Save to Firebase";
+            }
         }
 
         function calculateRemaining(expiryISO) {
@@ -566,25 +586,111 @@
             };
         }
 
-        // ================= FIREBASE LIVE SYNC =================
-        keysRef.on("value", (snapshot) => {
-            liveKeysList = [];
-            const data = snapshot.val();
-            if (data) {
-                Object.keys(data).forEach((k) => {
-                    liveKeysList.push(data[k]);
-                });
-            }
-            // Reverse so newest appears on top
-            liveKeysList.reverse();
-            renderKeys();
-        });
-
         function renderKeys() {
             const tbody = document.getElementById("keyTableBody");
-            document.getElementById("totalKeysCount").innerText = `${liveKeysList.length} Total Keys`;
+            document.getElementById("totalKeysCount").innerText = `${liveKeysList.length} Keys`;
             tbody.innerHTML = "";
 
             if (liveKeysList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-dim); padding: 25px;">No keys found in Firebase.</td></tr>`;
- 
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-dim); padding: 25px;">No active keys found.</td></tr>`;
+                return;
+            }
+
+            liveKeysList.forEach((item) => {
+                const remaining = calculateRemaining(item.expires_at);
+                const statusClass = remaining.isExpired ? "status-expired" : "status-active";
+                const statusLabel = remaining.isExpired ? "Expired" : "Active";
+
+                let boundCount = 0;
+                if (item.bound_devices) {
+                    if (Array.isArray(item.bound_devices)) boundCount = item.bound_devices.length;
+                    else if (typeof item.bound_devices === "string" && item.bound_devices.trim() !== "") boundCount = 1;
+                }
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="font-weight: 600; color: #fff;">${item.customer_name || 'N/A'}</td>
+                    <td>
+                        <div class="key-wrapper">
+                            <span class="key-text">${item.key}</span>
+                            <button class="btn-copy" onclick="copyText('${item.key}')" title="Copy Key">📋</button>
+                        </div>
+                    </td>
+                    <td>${item.max_devices}</td>
+                    <td>${boundCount} / ${item.max_devices}</td>
+                    <td>${remaining.text}</td>
+                    <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-action btn-extend" onclick="openExtendModal('${item.key}')">+ Days</button>
+                            <button class="btn-action btn-delete" onclick="deleteKey('${item.key}', '${item.customer_name}')">Delete</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ================= DIRECT REST DELETE =================
+        async function deleteKey(keyId, customer) {
+            if (!confirm(`Delete key (${keyId}) for: ${customer}?`)) return;
+            try {
+                await fetch(`${FIREBASE_BASE}/${keyId}.json`, { method: "DELETE" });
+                liveKeysList = liveKeysList.filter(k => k.key !== keyId);
+                renderKeys();
+            } catch (err) {
+                alert("Delete failed: " + err.message);
+            }
+        }
+
+        function openExtendModal(keyId) {
+            activeEditKey = liveKeysList.find(k => k.key === keyId);
+            if (!activeEditKey) return;
+            document.getElementById("modalCustomerTitle").innerText = `Customer: ${activeEditKey.customer_name} (${activeEditKey.key})`;
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+            activeEditKey = null;
+        }
+
+        // ================= DIRECT REST EXTEND DAYS =================
+        async function saveExtendedDays() {
+            const addDays = parseInt(document.getElementById("addDaysInput").value);
+            if (isNaN(addDays) || addDays <= 0 || !activeEditKey) return;
+
+            const btn = document.getElementById("modalSaveBtn");
+            btn.disabled = true;
+
+            let baseDate = new Date(activeEditKey.expires_at);
+            if (baseDate.getTime() < new Date().getTime()) {
+                baseDate = new Date();
+            }
+
+            baseDate.setDate(baseDate.getDate() + addDays);
+            const newIso = baseDate.toISOString();
+
+            try {
+                await fetch(`${FIREBASE_BASE}/${activeEditKey.key}.json`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ expires_at: newIso })
+                });
+
+                activeEditKey.expires_at = newIso;
+                closeModal();
+                renderKeys();
+                alert("Days extended successfully!");
+            } catch (err) {
+                alert("Extend failed: " + err.message);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Initial Load on opening
+        fetchLiveKeys();
+    </script>
+</body>
+</html>
