@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKY X R4X - Admin Dashboard (Firebase Live)</title>
+
+    <!-- Firebase SDK (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #0a0e17;
+            --bg-card: #111827;
+            --bg-input: #1a2234;
+            --border: #232f46;
+            --primary: #00e5ff;
+            --primary-hover: #00b4d8;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --success: #10b981;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+
+        .logo span {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .badge-credit {
+            background-color: rgba(0, 229, 255, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Top Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .nav-btn.active {
+            background-color: rgba(0, 229, 255, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        input, select {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-main {
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-main:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Success Alert Card for Generated Key */
+        .generated-box {
+            display: none;
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid var(--primary);
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .generated-key-display {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        /* Table & Management Styling */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+            min-width: 680px;
+        }
+
+        th {
+            background-color: var(--bg-input);
+            color: var(--text-dim);
+            padding: 12px 14px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .key-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .key-text {
+            font-family: monospace;
+            color: var(--primary);
+            background: rgba(0, 229, 255, 0.08);
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            user-select: all;
+        }
+
+        .btn-copy {
+            background-color: #24314c;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-copy:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .status-expired {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-action {
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-extend {
+            background-color: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #0284c7;
+        }
+
+        .btn-delete {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            width: 90%;
+            max-width: 380px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>SKY X R4X</h1>
+                <span>Key Management Portal (Firebase Connected)</span>
+            </div>
+            <div class="badge-credit">Credits: ∞ (Unlimited)</div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-btn active" id="tabHomeBtn" onclick="switchTab('home')">🏠 Home (Generator)</button>
+            <button class="nav-btn" id="tabManageBtn" onclick="switchTab('manage')">📋 Key Management</button>
+        </div>
+
+        <!-- ================= TAB 1: HOME (KEY GENERATOR) ================= -->
+        <div id="homeSection">
+            <div class="card">
+                <div class="card-title">Generate New License Key</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="customerName" placeholder="उदा. Rahul VIP, Aryan" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Duration / Validity</label>
+                        <select id="keyDuration">
+                            <option value="1">1 Day</option>
+                            <option value="2">2 Days</option>
+                            <option value="5">5 Days</option>
+                            <option value="15">15 Days</option>
+                            <option value="20">20 Days</option>
+                            <option value="30">1 Month (30 Days)</option>
+                            <option value="365">1 Year (365 Days)</option>
+                            <option value="99999">Lifetime</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Max Allowed Devices</label>
+                        <select id="keyDevices">
+                            <option value="1">1 Device</option>
+                            <option value="2">2 Devices</option>
+                            <option value="3">3 Devices</option>
+                            <option value="5">5 Devices</option>
+                            <option value="10">10 Devices</option>
+                            <option value="15">15 Devices</option>
+                            <option value="100">100 Devices</option>
+                            <option value="Unlimited">Unlimited Devices</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Custom Prefix (Optional)</label>
+                        <input type="text" id="keyPrefix" placeholder="उदा. SKY" value="SKY">
+                    </div>
+                </div>
+
+                <button class="btn-main" onclick="generateKey()">+ Generate & Save to Firebase</button>
+
+                <!-- Box showing generated key with instant copy -->
+                <div class="generated-box" id="generatedResultBox">
+                    <span style="font-size: 13px; color: var(--text-dim);">New Key Created in Firebase for: <b id="displayCustomer" style="color:#fff;"></b></span>
+                    <div class="generated-key-display" id="displayGeneratedKey"></div>
+                    <button class="btn-copy" style="padding: 9px 18px; font-weight: bold;" onclick="copyText(document.getElementById('displayGeneratedKey').innerText)">📋 Copy Key</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: KEY MANAGEMENT ================= -->
+        <div id="manageSection" style="display: none;">
+            <div class="card">
+                <div class="card-title">
+                    <span>Manage Active Customers & Keys (Live from Firebase)</span>
+                    <span id="totalKeysCount" style="font-size: 13px; color: var(--primary);">0 Total Keys</span>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>License Key</th>
+                                <th>Devices</th>
+                                <th>Bound Devices</th>
+                                <th>Time Remaining</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="keyTableBody">
+                            <!-- Realtime Firebase Data Populated Here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit/Extend Days Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 12px; font-size: 17px;">Extend Days for Customer</h3>
+            <p id="modalCustomerTitle" style="font-size: 13px; color: var(--text-dim); margin-bottom: 12px;"></p>
+            <div class="form-group">
+                <label>Add Extra Days</label>
+                <input type="number" id="addDaysInput" min="1" value="7">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-action" style="background:#24314c; color:#fff;" onclick="closeModal()">Cancel</button>
+                <button class="btn-action" style="background:var(--primary); color:#000;" onclick="saveExtendedDays()">Add Days</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= FIREBASE INITIALIZATION =================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYo02Tb2mDKIm_x2zi3bS41-jztg6O3lQ",
+            authDomain: "skymodsloader.firebaseapp.com",
+            databaseURL: "https://skymodsloader-default-rtdb.firebaseio.com",
+            projectId: "skymodsloader",
+            storageBucket: "skymodsloader.firebasestorage.app",
+            messagingSenderId: "455679015553",
+            appId: "1:455679015553:web:7ef67519adca5e07baeb80",
+            measurementId: "G-LRZGVXG20Q"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const keysRef = db.ref("keys");
+
+        let liveKeysList = [];
+        let activeEditKey = null;
+
+        // Tab Switching
+        function switchTab(tab) {
+            const homeSec = document.getElementById("homeSection");
+            const manageSec = document.getElementById("manageSection");
+            const tabHomeBtn = document.getElementById("tabHomeBtn");
+            const tabManageBtn = document.getElementById("tabManageBtn");
+
+            if (tab === "home") {
+                homeSec.style.display = "block";
+                manageSec.style.display = "none";
+                tabHomeBtn.classList.add("active");
+                tabManageBtn.classList.remove("active");
+            } else {
+                homeSec.style.display = "none";
+                manageSec.style.display = "block";
+                tabHomeBtn.classList.remove("active");
+                tabManageBtn.classList.add("active");
+                renderKeys();
+            }
+        }
+
+        function randomString(length = 4) {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let result = "";
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Key copied to clipboard: " + text);
+            }).catch(() => {
+                const tempInput = document.createElement("input");
+                tempInput.value = text;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand("copy");
+                document.body.removeChild(tempInput);
+                alert("Key copied to clipboard: " + text);
+            });
+        }
+
+        // ================= FIREBASE CREATE KEY =================
+        function generateKey() {
+            const customer = document.getElementById("customerName").value.trim() || "Anonymous Customer";
+            const durationDays = parseInt(document.getElementById("keyDuration").value);
+            const devices = document.getElementById("keyDevices").value;
+            const prefix = document.getElementById("keyPrefix").value.trim() || "SKY";
+
+            const now = new Date();
+            let expireDate = new Date();
+
+            if (durationDays === 99999) {
+                expireDate.setFullYear(expireDate.getFullYear() + 50); // Lifetime
+            } else {
+                expireDate.setDate(now.getDate() + durationDays);
+            }
+
+            const formattedKey = `${prefix}-${randomString(4)}-${randomString(4)}`;
+
+            const keyData = {
+                customer_name: customer,
+                key: formattedKey,
+                key_type: "mod_menu",
+                durationDays: durationDays,
+                expires_at: expireDate.toISOString(),
+                max_devices: devices,
+                bound_devices: "" // Initially empty, will bind on user login
+            };
+
+            // Save directly to Firebase Realtime Database
+            keysRef.child(formattedKey).set(keyData).then(() => {
+                document.getElementById("displayCustomer").innerText = customer;
+                document.getElementById("displayGeneratedKey").innerText = formattedKey;
+                document.getElementById("generatedResultBox").style.display = "block";
+            }).catch(error => {
+                alert("Error saving key to Firebase: " + error.message);
+            });
+        }
+
+        function calculateRemaining(expiryISO) {
+            const now = new Date().getTime();
+            const expiry = new Date(expiryISO).getTime();
+            const diff = expiry - now;
+
+            if (diff <= 0) return { text: "Expired", isExpired: true };
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            if (days > 3650) return { text: "Lifetime", isExpired: false };
+
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            return {
+                text: `${days}d ${hours}h ${minutes}m`,
+                isExpired: false
+            };
+        }
+
+        // ================= FIREBASE LIVE SYNC =================
+        keysRef.on("value", (snapshot) => {
+            liveKeysList = [];
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).forEach((k) => {
+                    liveKeysList.push(data[k]);
+                });
+            }
+            // Reverse so newest appears on top
+            liveKeysList.reverse();
+            renderKeys();
+        });
+
+        function renderKeys() {
+            const tbody = document.getElementById("keyTableBody");
+            document.getElementById("totalKeysCount").innerText = `${liveKeysList.length} Total Keys`;
+            tbody.innerHTML = "";
+
+            if (liveKeysList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-dim); padding: 25px;">No keys found in Firebase.</td></tr>`;
+ 
