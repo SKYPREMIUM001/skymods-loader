@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKY MODS - User Access Portal</title>
+    <style>
+        :root {
+            --bg-main: #0a0e17;
+            --bg-card: #121927;
+            --bg-input: #1a2336;
+            --primary: #00e5ff;
+            --violet: #a855f7;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: #232f46;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--violet));
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--primary);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--bg-input);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-main {
+            background: linear-gradient(90deg, var(--primary), var(--violet));
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-main:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status-box {
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+        }
+
+        .status-approved {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .status-blocked {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .key-display {
+            background: #000;
+            border: 1px dashed var(--primary);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 18px;
+            color: var(--primary);
+            letter-spacing: 1px;
+            margin: 10px 0;
+            user-select: all;
+            word-break: break-all;
+        }
+
+        .btn-copy {
+            background-color: #24314c;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        .changelog-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 13px;
+        }
+
+        .changelog-box h4 {
+            color: var(--violet);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .changelog-box ul {
+            padding-left: 18px;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .warning-notice {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--danger);
+            padding: 10px 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 12px;
+            color: #fca5a5;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- ================= 1. AUTH SCREEN ================= -->
+    <div class="card" id="authView">
+        <div class="header">
+            <h1>SKY MODS</h1>
+            <p>User Access Portal & Key Management</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="tabLoginBtn" onclick="switchAuthTab('login')">Sign In</button>
+            <button class="tab-btn" id="tabRegisterBtn" onclick="switchAuthTab('register')">Register / Apply</button>
+        </div>
+
+        <form id="authForm" onsubmit="handleAuth(event)">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="authUsername" placeholder="e.g. rahul_op" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="authPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-main" id="authSubmitBtn">Sign In</button>
+        </form>
+    </div>
+
+    <!-- ================= 2. DASHBOARD SCREEN ================= -->
+    <div class="card" id="dashboardView" style="display: none;">
+        <div class="top-bar">
+            <div>
+                <span style="font-size: 12px; color: var(--text-dim);">Logged in as:</span>
+                <b id="dashUsername" style="color: var(--primary);"></b>
+            </div>
+            <button class="btn-logout" onclick="logout()">Sign Out</button>
+        </div>
+
+        <!-- STATUS BOX -->
+        <div id="statusContainer"></div>
+
+        <!-- UPDATE CHANGELOG -->
+        <div class="changelog-box">
+            <h4>
+                <span>Update Changelog (v3.3)</span>
+                <span style="font-size: 11px; color: var(--primary);">4 Fixes</span>
+            </h4>
+            <ul>
+                <li>Resolved network connection timeout on mobile networks.</li>
+                <li>Optimized ESP Line and Box drawing performance.</li>
+                <li>Added anti-crash protection for Android 14 and 15.</li>
+                <li>Key validation latency reduced by 50%.</li>
+            </ul>
+        </div>
+
+        <!-- STRICT RULE NOTICE -->
+        <div class="warning-notice">
+            <b>MANDATORY RULE:</b> You are required to submit testing feedback below after using the mod. Accounts without submitted feedback will have their license keys permanently blocked.
+        </div>
+
+        <!-- FEEDBACK FORM -->
+        <div id="feedbackSection" style="display: none;">
+            <div class="header" style="text-align: left; margin-bottom: 12px;">
+                <h3 style="font-size: 15px; color: var(--text-main);">Submit Game Feedback</h3>
+                <p>Report your gameplay performance and any issues encountered:</p>
+            </div>
+
+            <form id="feedbackForm" onsubmit="submitFeedback(event)">
+                <div class="form-group">
+                    <label>Device Model</label>
+                    <input type="text" id="phoneModel" placeholder="e.g. Realme 14 Pro, Poco X3" required>
+                </div>
+                <div class="form-group">
+                    <label>Performance Status</label>
+                    <select id="perfStatus">
+                        <option value="Smooth & Safe">Smooth & Safe (No Ban)</option>
+                        <option value="Minor Lag">Experiencing Minor Lag</option>
+                        <option value="Game Crash">Game Crashes While Loading</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Feedback & Suggestions</label>
+                    <textarea id="feedbackText" rows="3" placeholder="Provide detailed feedback..." required></textarea>
+                </div>
+                <button type="submit" class="btn-main" id="fbSubmitBtn">Upload Feedback</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const FIREBASE_BASE = "https://skymodsloader-default-rtdb.firebaseio.com/portal_users";
+    let currentAuthMode = "login";
+    let currentUser = null;
+
+    function switchAuthTab(mode) {
+        currentAuthMode = mode;
+        const loginBtn = document.getElementById("tabLoginBtn");
+        const regBtn = document.getElementById("tabRegisterBtn");
+        const submitBtn = document.getElementById("authSubmitBtn");
+
+        if (mode === "login") {
+            loginBtn.classList.add("active");
+            regBtn.classList.remove("active");
+            submitBtn.innerText = "Sign In";
+        } else {
+            regBtn.classList.add("active");
+            loginBtn.classList.remove("active");
+            submitBtn.innerText = "Register & Apply for Key";
+        }
+    }
+
+    function copyKey(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Key copied to clipboard: " + text);
+        });
+    }
+
+    async function handleAuth(e) {
+        e.preventDefault();
+        const username = document.getElementById("authUsername").value.trim().toLowerCase();
+        const password = document.getElementById("authPassword").value.trim();
+        const btn = document.getElementById("authSubmitBtn");
+
+        if (!username || !password) return;
+
+        btn.disabled = true;
+        btn.innerText = "Processing...";
+
+        try {
+            const res = await fetch(`${FIREBASE_BASE}/${username}.json`);
+            const userData = await res.json();
+
+            if (currentAuthMode === "register") {
+                if (userData) {
+                    alert("This username is already taken. Please choose another.");
+                    btn.disabled = false;
+                    btn.innerText = "Register & Apply for Key";
+                    return;
+                }
+
+                const newUserData = {
+                    username: username,
+                    password: password,
+                    status: "pending",
+                    key: "",
+                    feedback_status: false,
+                    feedback_text: "",
+                    created_at: new Date().toISOString()
+                };
+
+                await fetch(`${FIREBASE_BASE}/${username}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(newUserData)
+                });
+
+                alert("Account created successfully! Your request has been sent for admin approval.");
+                loginSuccess(newUserData);
+            } else {
+                if (!userData || userData.password !== password) {
+                    alert("Invalid username or password!");
+                    btn.disabled = false;
+                    btn.innerText = "Sign In";
+                    return;
+                }
+                loginSuccess(userData);
+            }
+        } catch (err) {
+            alert("Network Error: " + err.message);
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    function loginSuccess(user) {
+        currentUser = user;
+        localStorage.setItem("sky_portal_user", JSON.stringify(user));
+        document.getElementById("authView").style.display = "none";
+        document.getElementById("dashboardView").style.display = "block";
+        document.getElementById("dashUsername").innerText = user.username;
+        renderDashboard();
+    }
+
+    function renderDashboard() {
+        const statusBox = document.getElementById("statusContainer");
+        const fbSection = document.getElementById("feedbackSection");
+
+        if (currentUser.status === "pending") {
+            statusBox.innerHTML = `
+                <div class="status-box status-pending">
+                    <h3>Waiting for Admin Approval</h3>
+                    <p style="font-size: 13px; margin-top: 6px;">Your application has been received. Your key will appear here once approved by admin.</p>
+                </div>
+            `;
+            fbSection.style.display = "none";
+        } else if (currentUser.status === "approved") {
+            statusBox.innerHTML = `
+                <div class="status-box status-approved">
+                    <h3>Application Approved</h3>
+                    <p style="font-size: 13px; margin-top: 4px;">Your license key is ready:</p>
+                    <div class="key-display" id="keyText">${currentUser.key || "WAITING-KEY"}</div>
+                    <button class="btn-copy" onclick="copyKey('${currentUser.key}')">Copy Key</button>
+                </div>
+            `;
+            fbSection.style.display = "block";
+
+            if (currentUser.feedback_status) {
+                document.getElementById("fbSubmitBtn").disabled = true;
+                document.getElementById("fbSubmitBtn").innerText = "Feedback Submitted Successfully";
+            }
+        } else if (currentUser.status === "blocked") {
+            statusBox.innerHTML = `
+                <div class="status-box status-blocked">
+                    <h3>Account & Key Blocked</h3>
+                    <p style="font-size: 13px; margin-top: 6px;">Your key and access have been revoked due to missing feedback or policy violation.</p>
+                </div>
+            `;
+            fbSection.style.display = "none";
+        }
+    }
+
+    async function submitFeedback(e) {
+        e.preventDefault();
+        const model = document.getElementById("phoneModel").value.trim();
+        const perf = document.getElementById("perfStatus").value;
+        const text = document.getElementById("feedbackText").value.trim();
+        const btn = document.getElementById("fbSubmitBtn");
+
+        btn.disabled = true;
+        btn.innerText = "Submitting...";
+
+        const fullFeedback = `[${model}] [${perf}] - ${text}`;
+
+        try {
+            await fetch(`${FIREBASE_BASE}/${currentUser.username}.json`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    feedback_status: true,
+                    feedback_text: fullFeedback,
+                    feedback_submitted_at: new Date().toISOString()
+                })
+            });
+
+            currentUser.feedback_status = true;
+            currentUser.feedback_text = fullFeedback;
+            localStorage.setItem("sky_portal_user", JSON.stringify(currentUser));
+            alert("Feedback recorded successfully! Your license key remains active.");
+            btn.innerText = "Feedback Submitted Successfully";
+        } catch (err) {
+            alert("Failed to submit feedback: " + err.message);
+            btn.disabled = false;
+            btn.innerText = "Upload Feedback";
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem("sky_portal_user");
+        location.reload();
+    }
+
+    window.onload = function() {
+        const saved = localStorage.getItem("sky_portal_user");
+        if (saved) {
+            currentUser = JSON.parse(saved);
+            fetch(`${FIREBASE_BASE}/${currentUser.username}.json`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data) {
+                        currentUser = data;
+                        localStorage.setItem("sky_portal_user", JSON.stringify(data));
+                    }
+                    loginSuccess(currentUser);
+                })
+                .catch(() => loginSuccess(currentUser));
+        }
+    };
+</script>
+</body>
+</html>
