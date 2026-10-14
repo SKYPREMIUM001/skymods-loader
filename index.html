@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKY X R4X - Master Admin Dashboard</title>
+    <title>SKY X R4X - Master Admin & Reseller Hub</title>
     <style>
         :root {
             --bg-main: #0a0e17;
@@ -34,7 +34,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1250px;
             margin: 0 auto;
         }
 
@@ -168,25 +168,6 @@
             background-color: var(--primary-hover);
         }
 
-        .generated-box {
-            display: none;
-            background: rgba(0, 229, 255, 0.08);
-            border: 1px solid var(--primary);
-            padding: 16px;
-            border-radius: 10px;
-            margin-top: 16px;
-            text-align: center;
-        }
-
-        .generated-key-display {
-            font-family: monospace;
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--primary);
-            margin: 10px 0;
-            word-break: break-all;
-        }
-
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -290,12 +271,10 @@
             border: 1px solid #0284c7;
         }
 
-        .btn-screenshot {
-            background-color: rgba(168, 85, 247, 0.2);
-            color: #d8b4fe;
-            border: 1px solid var(--violet);
-            margin-top: 6px;
-            display: inline-block;
+        .btn-recharge {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
         }
 
         .modal {
@@ -333,21 +312,22 @@
         <header>
             <div class="logo">
                 <h1>SKY X R4X</h1>
-                <span>Master Admin & Feedback Control</span>
+                <span>Master Admin & Reseller Hub</span>
             </div>
-            <div class="badge-credit">Admin: OWNER SKY</div>
+            <div class="badge-credit">Admin: OWNER SKY (Credits: Unlimited)</div>
         </header>
 
         <div class="nav-tabs">
-            <button class="nav-btn active" id="tabHomeBtn" onclick="switchTab('home')">Key Generator</button>
-            <button class="nav-btn" id="tabManageBtn" onclick="switchTab('manage')">Key Management</button>
+            <button class="nav-btn active" id="tabHomeBtn" onclick="switchTab('home')">Master Generator</button>
+            <button class="nav-btn" id="tabManageBtn" onclick="switchTab('manage')">All Keys</button>
             <button class="nav-btn" id="tabPortalBtn" onclick="switchTab('portal')">Requests & Feedback <span id="pendingCountBadge" style="background:var(--danger); color:#fff; padding:2px 6px; border-radius:10px; font-size:11px; margin-left:4px; display:none;">0</span></button>
+            <button class="nav-btn" id="tabResellerBtn" onclick="switchTab('reseller')">Reseller Hub</button>
         </div>
 
-        <!-- ================= TAB 1: GENERATOR ================= -->
+        <!-- TAB 1: MASTER GENERATOR -->
         <div id="homeSection">
             <div class="card">
-                <div class="card-title">Generate Standalone License Key</div>
+                <div class="card-title">Generate Admin License Key</div>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Customer Name</label>
@@ -371,7 +351,6 @@
                             <option value="1">1 Device</option>
                             <option value="2">2 Devices</option>
                             <option value="3">3 Devices</option>
-                            <option value="5">5 Devices</option>
                             <option value="Unlimited">Unlimited Devices</option>
                         </select>
                     </div>
@@ -382,16 +361,10 @@
                 </div>
 
                 <button class="btn-main" id="generateBtn" onclick="generateKey()">+ Generate & Save to Firebase</button>
-
-                <div class="generated-box" id="generatedResultBox">
-                    <span style="font-size: 13px; color: var(--text-dim);">New Key Created for: <b id="displayCustomer" style="color:#fff;"></b></span>
-                    <div class="generated-key-display" id="displayGeneratedKey"></div>
-                    <button class="btn-copy" onclick="copyText(document.getElementById('displayGeneratedKey').innerText)">Copy Key</button>
-                </div>
             </div>
         </div>
 
-        <!-- ================= TAB 2: KEY MANAGEMENT ================= -->
+        <!-- TAB 2: ALL KEYS -->
         <div id="manageSection" style="display: none;">
             <div class="card">
                 <div class="card-title">
@@ -402,24 +375,24 @@
                     <table>
                         <thead>
                             <tr>
+                                <th>Created By</th>
                                 <th>Customer</th>
                                 <th>License Key</th>
                                 <th>Devices</th>
-                                <th>Bound Count</th>
                                 <th>Time Remaining</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="keyTableBody">
-                            <tr><td colspan="7" style="text-align:center; color: var(--text-dim); padding: 20px;">Loading keys...</td></tr>
+                            <tr><td colspan="7" style="text-align:center; padding: 20px;">Loading keys...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- ================= TAB 3: USER REQUESTS & FEEDBACK ================= -->
+        <!-- TAB 3: PORTAL REQUESTS -->
         <div id="portalSection" style="display: none;">
             <div class="card">
                 <div class="card-title">
@@ -439,7 +412,85 @@
                             </tr>
                         </thead>
                         <tbody id="portalTableBody">
-                            <tr><td colspan="6" style="text-align:center; color: var(--text-dim); padding: 20px;">Loading users...</td></tr>
+                            <tr><td colspan="6" style="text-align:center; padding: 20px;">Loading users...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: RESELLER HUB -->
+        <div id="resellerSection" style="display: none;">
+            <!-- Create Reseller Account -->
+            <div class="card">
+                <div class="card-title">Create New Reseller Account</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Reseller Username / ID</label>
+                        <input type="text" id="newResellerUser" placeholder="e.g. aryan_reseller">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="newResellerPass" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label>Starting Credits</label>
+                        <input type="number" id="newResellerCredits" value="10" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Universal Reseller Portal Link</label>
+                        <input type="text" readonly id="resellerPortalLinkDisplay" style="color:var(--primary); font-size:12px;">
+                    </div>
+                </div>
+                <button class="btn-main" onclick="createResellerAccount()">+ Create Reseller Account</button>
+            </div>
+
+            <!-- Manage Active Resellers -->
+            <div class="card">
+                <div class="card-title">
+                    <span>Active Resellers List & Credit Management</span>
+                    <button class="btn-copy" onclick="fetchResellers()">Refresh Resellers</button>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reseller Username</th>
+                                <th>Available Credits</th>
+                                <th>Total Keys Sold</th>
+                                <th>Status</th>
+                                <th>Created Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resellerTableBody">
+                            <tr><td colspan="6" style="text-align:center; padding: 20px;">Loading resellers...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Audit Log of Keys Generated by Resellers -->
+            <div class="card">
+                <div class="card-title">
+                    <span>Audit Log: Keys Generated by Resellers</span>
+                    <button class="btn-copy" onclick="fetchLiveKeys()">Refresh Audit</button>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Reseller Name</th>
+                                <th>Customer Name</th>
+                                <th>License Key</th>
+                                <th>Validity</th>
+                                <th>Devices</th>
+                                <th>Credits Deducted</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resellerAuditBody">
+                            <tr><td colspan="7" style="text-align:center; padding: 20px;">No reseller keys found.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -447,39 +498,18 @@
         </div>
     </div>
 
-    <!-- Approve Modal -->
-    <div class="modal" id="approveModal">
+    <!-- Recharge Reseller Credits Modal -->
+    <div class="modal" id="rechargeModal">
         <div class="modal-content">
-            <h3 style="margin-bottom: 8px;">Approve & Grant Key</h3>
-            <p id="modalUserTitle" style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;"></p>
+            <h3 style="margin-bottom: 8px;">Recharge Reseller Credits</h3>
+            <p id="rechargeResellerTitle" style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;"></p>
             <div class="form-group">
-                <label>Key Validity</label>
-                <select id="approveDuration">
-                    <option value="1">1 Day Trial</option>
-                    <option value="7">7 Days</option>
-                    <option value="30">30 Days</option>
-                    <option value="99999">Lifetime</option>
-                </select>
+                <label>Add Credits</label>
+                <input type="number" id="addCreditAmount" value="20" min="1">
             </div>
             <div class="modal-footer">
-                <button class="btn-action" style="background:#24314c; color:#fff;" onclick="closeApproveModal()">Cancel</button>
-                <button class="btn-action btn-approve" id="confirmApproveBtn" onclick="confirmApproval()">Approve & Generate</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Extend Days Modal -->
-    <div class="modal" id="extendModal">
-        <div class="modal-content">
-            <h3 style="margin-bottom: 8px;">Extend Key Validity</h3>
-            <p id="modalExtendTitle" style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;"></p>
-            <div class="form-group">
-                <label>Add Extra Days</label>
-                <input type="number" id="addDaysInput" min="1" value="7">
-            </div>
-            <div class="modal-footer">
-                <button class="btn-action" style="background:#24314c; color:#fff;" onclick="closeExtendModal()">Cancel</button>
-                <button class="btn-action btn-extend" id="confirmExtendBtn" onclick="confirmExtendDays()">Add Days</button>
+                <button class="btn-action" style="background:#24314c; color:#fff;" onclick="closeRechargeModal()">Cancel</button>
+                <button class="btn-action btn-approve" id="confirmRechargeBtn" onclick="confirmCreditRecharge()">+ Add Credits</button>
             </div>
         </div>
     </div>
@@ -498,23 +528,35 @@
     <script>
         const FIREBASE_KEYS = "https://skymodsloader-default-rtdb.firebaseio.com/keys";
         const FIREBASE_USERS = "https://skymodsloader-default-rtdb.firebaseio.com/portal_users";
+        const FIREBASE_RESELLERS = "https://skymodsloader-default-rtdb.firebaseio.com/resellers";
 
         let liveKeysList = [];
         let liveUsersList = [];
-        let selectedUsername = null;
-        let selectedExtendKey = null;
+        let liveResellersList = [];
+        let selectedResellerForRecharge = null;
+
+        window.onload = function() {
+            const portalUrl = window.location.origin + window.location.pathname.replace("index.html", "") + "reseller.html";
+            document.getElementById("resellerPortalLinkDisplay").value = portalUrl;
+        };
 
         function switchTab(tab) {
             document.getElementById("homeSection").style.display = tab === "home" ? "block" : "none";
             document.getElementById("manageSection").style.display = tab === "manage" ? "block" : "none";
             document.getElementById("portalSection").style.display = tab === "portal" ? "block" : "none";
+            document.getElementById("resellerSection").style.display = tab === "reseller" ? "block" : "none";
 
             document.getElementById("tabHomeBtn").classList.toggle("active", tab === "home");
             document.getElementById("tabManageBtn").classList.toggle("active", tab === "manage");
             document.getElementById("tabPortalBtn").classList.toggle("active", tab === "portal");
+            document.getElementById("tabResellerBtn").classList.toggle("active", tab === "reseller");
 
             if (tab === "manage") fetchLiveKeys();
             if (tab === "portal") fetchPortalUsers();
+            if (tab === "reseller") {
+                fetchResellers();
+                fetchLiveKeys();
+            }
         }
 
         function randomString(length = 4) {
@@ -534,17 +576,12 @@
             const diff = expiry - now;
 
             if (diff <= 0) return { text: "Expired", isExpired: true };
-
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             if (days > 3650) return { text: "Lifetime", isExpired: false };
-
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-            return { text: `${days}d ${hours}h ${minutes}m`, isExpired: false };
+            return { text: `${days}d ${hours}h`, isExpired: false };
         }
 
-        // ================= TAB 1: GENERATE KEY =================
         async function generateKey() {
             const btn = document.getElementById("generateBtn");
             const customer = document.getElementById("customerName").value.trim() || "Anonymous";
@@ -553,8 +590,6 @@
             const prefix = document.getElementById("keyPrefix").value.trim() || "SKY";
 
             btn.disabled = true;
-            btn.innerText = "Saving to Firebase...";
-
             const formattedKey = `${prefix}-${randomString(4)}-${randomString(4)}`;
             let exp = new Date();
             if (duration === 99999) exp.setFullYear(exp.getFullYear() + 50);
@@ -567,36 +602,33 @@
                 durationDays: duration,
                 expires_at: exp.toISOString(),
                 max_devices: devices,
-                bound_devices: ""
+                bound_devices: "",
+                created_by: "ADMIN (OWNER SKY)",
+                credits_deducted: 0,
+                created_at: new Date().toISOString()
             };
 
             try {
-                const res = await fetch(`${FIREBASE_KEYS}/${formattedKey}.json`, {
+                await fetch(`${FIREBASE_KEYS}/${formattedKey}.json`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(keyData)
                 });
-                if (!res.ok) throw new Error("Firebase write failed");
-
-                document.getElementById("displayCustomer").innerText = customer;
-                document.getElementById("displayGeneratedKey").innerText = formattedKey;
-                document.getElementById("generatedResultBox").style.display = "block";
-                alert("Key Generated: " + formattedKey);
+                alert("Master Key Generated: " + formattedKey);
             } catch (e) {
                 alert("Error: " + e.message);
             } finally {
                 btn.disabled = false;
-                btn.innerText = "+ Generate & Save to Firebase";
             }
         }
 
-        // ================= TAB 2: FETCH KEYS =================
         async function fetchLiveKeys() {
             try {
                 const res = await fetch(`${FIREBASE_KEYS}.json`);
                 const data = await res.json();
                 liveKeysList = data ? Object.values(data).reverse() : [];
                 renderKeys();
+                renderResellerAudit();
             } catch (err) {
                 console.error(err);
             }
@@ -612,26 +644,41 @@
                     ? `<span class="status-badge status-expired">Expired</span>` 
                     : `<span class="status-badge status-active">Active</span>`;
 
-                let boundCount = 0;
-                if (k.bound_devices) {
-                    if (Array.isArray(k.bound_devices)) boundCount = k.bound_devices.length;
-                    else if (typeof k.bound_devices === "string" && k.bound_devices.trim() !== "") boundCount = 1;
-                }
-
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
+                    <td style="color:var(--violet); font-weight:600;">${k.created_by || 'ADMIN'}</td>
                     <td style="color:#fff; font-weight:600;">${k.customer_name || 'N/A'}</td>
                     <td><span class="key-text">${k.key}</span> <button class="btn-copy" onclick="copyText('${k.key}')">Copy</button></td>
                     <td>${k.max_devices}</td>
-                    <td>${boundCount} / ${k.max_devices}</td>
                     <td>${rem.text}</td>
                     <td>${statusBadge}</td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="btn-action btn-extend" onclick="openExtendModal('${k.key}')">+ Days</button>
-                            <button class="btn-action btn-block" onclick="deleteRawKey('${k.key}')">Delete</button>
-                        </div>
-                    </td>
+                    <td><button class="btn-action btn-block" onclick="deleteRawKey('${k.key}')">Delete</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderResellerAudit() {
+            const tbody = document.getElementById("resellerAuditBody");
+            const resellerKeys = liveKeysList.filter(k => k.created_by && !k.created_by.includes("ADMIN"));
+
+            if (resellerKeys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">No keys generated by resellers yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = "";
+            resellerKeys.forEach(k => {
+                const dateStr = k.created_at ? new Date(k.created_at).toLocaleString() : "N/A";
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="color:var(--primary); font-weight:bold;">${k.created_by}</td>
+                    <td style="color:#fff;">${k.customer_name}</td>
+                    <td><span class="key-text">${k.key}</span></td>
+                    <td>${k.durationDays} Days</td>
+                    <td>${k.max_devices} Device</td>
+                    <td style="color:var(--warning); font-weight:bold;">-${k.credits_deducted || (k.durationDays * (parseInt(k.max_devices)||1))} Credits</td>
+                    <td style="color:var(--text-dim); font-size:12px;">${dateStr}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -643,46 +690,6 @@
             fetchLiveKeys();
         }
 
-        function openExtendModal(key) {
-            selectedExtendKey = liveKeysList.find(k => k.key === key);
-            if (!selectedExtendKey) return;
-            document.getElementById("modalExtendTitle").innerText = `Key: ${key} (${selectedExtendKey.customer_name})`;
-            document.getElementById("extendModal").style.display = "flex";
-        }
-
-        function closeExtendModal() {
-            document.getElementById("extendModal").style.display = "none";
-            selectedExtendKey = null;
-        }
-
-        async function confirmExtendDays() {
-            const addDays = parseInt(document.getElementById("addDaysInput").value);
-            if (isNaN(addDays) || addDays <= 0 || !selectedExtendKey) return;
-
-            const btn = document.getElementById("confirmExtendBtn");
-            btn.disabled = true;
-
-            let baseDate = new Date(selectedExtendKey.expires_at);
-            if (baseDate.getTime() < new Date().getTime()) baseDate = new Date();
-            baseDate.setDate(baseDate.getDate() + addDays);
-
-            try {
-                await fetch(`${FIREBASE_KEYS}/${selectedExtendKey.key}.json`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ expires_at: baseDate.toISOString() })
-                });
-                alert("Days added successfully!");
-                closeExtendModal();
-                fetchLiveKeys();
-            } catch (e) {
-                alert("Error extending key: " + e.message);
-            } finally {
-                btn.disabled = false;
-            }
-        }
-
-        // ================= TAB 3: USER REQUESTS & FEEDBACK =================
         async function fetchPortalUsers() {
             try {
                 const res = await fetch(`${FIREBASE_USERS}.json`);
@@ -696,31 +703,21 @@
 
         function renderPortalUsers() {
             const tbody = document.getElementById("portalTableBody");
-            const badge = document.getElementById("pendingCountBadge");
             tbody.innerHTML = "";
 
-            let pendingCount = 0;
             if (liveUsersList.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No user applications found.</td></tr>`;
-                badge.style.display = "none";
                 return;
             }
 
             liveUsersList.forEach(u => {
-                if (u.status === "pending") pendingCount++;
-
-                let fbBadge = `<span class="status-badge status-pending">No Feedback</span>`;
-                if (u.feedback_status) {
-                    fbBadge = `<span class="status-badge status-active">Submitted</span>`;
-                }
-
                 let statusBadge = `<span class="status-badge status-pending">Pending</span>`;
                 if (u.status === "approved") statusBadge = `<span class="status-badge status-approved">Approved</span>`;
                 if (u.status === "blocked") statusBadge = `<span class="status-badge status-blocked">Blocked</span>`;
 
                 let screenshotBtn = "";
                 if (u.feedback_image) {
-                    screenshotBtn = `<br><button class="btn-action btn-screenshot" onclick="openImageModalByUsername('${u.username}')">View Screenshot</button>`;
+                    screenshotBtn = `<br><button class="btn-action btn-extend" style="margin-top:6px;" onclick="openImageModal('${u.feedback_image}')">View Screenshot</button>`;
                 }
 
                 const tr = document.createElement("tr");
@@ -728,132 +725,188 @@
                     <td style="color:#fff; font-weight:bold;">${u.username}</td>
                     <td>${statusBadge}</td>
                     <td>${u.key ? `<span class="key-text">${u.key}</span>` : '<span style="color:var(--text-dim);">None</span>'}</td>
-                    <td>${fbBadge}</td>
-                    <td style="max-width:320px; white-space:pre-wrap; font-size:12px; color:#cbd5e1; line-height:1.4;">${u.feedback_text || 'No feedback submitted yet'}${screenshotBtn}</td>
+                    <td>${u.feedback_status ? '<span class="status-badge status-active">Submitted</span>' : '<span class="status-badge status-pending">No Feedback</span>'}</td>
+                    <td style="max-width:300px; white-space:pre-wrap; font-size:12px;">${u.feedback_text || 'No feedback yet'}${screenshotBtn}</td>
                     <td>
                         <div class="action-btns">
-                            ${u.status !== 'approved' ? `<button class="btn-action btn-approve" onclick="openApproveModal('${u.username}')">Approve</button>` : ''}
-                            ${u.status !== 'blocked' ? `<button class="btn-action btn-block" onclick="blockUser('${u.username}', '${u.key}')">Block</button>` : `<button class="btn-action btn-approve" onclick="unblockUser('${u.username}')">Unblock</button>`}
-                            <button class="btn-action btn-block" onclick="deleteUserRequest('${u.username}', '${u.key}')">Del</button>
+                            ${u.status !== 'blocked' ? `<button class="btn-action btn-block" onclick="blockPortalUser('${u.username}', '${u.key}')">Block</button>` : `<button class="btn-action btn-approve" onclick="unblockPortalUser('${u.username}')">Unblock</button>`}
+                            <button class="btn-action btn-block" onclick="deletePortalUser('${u.username}', '${u.key}')">Del</button>
                         </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
-
-            if (pendingCount > 0) {
-                badge.innerText = pendingCount;
-                badge.style.display = "inline-block";
-            } else {
-                badge.style.display = "none";
-            }
         }
 
-        function openImageModalByUsername(username) {
-            const user = liveUsersList.find(u => u.username === username);
-            if (!user || !user.feedback_image) return;
-            document.getElementById("modalImageView").src = user.feedback_image;
+        function openImageModal(src) {
+            document.getElementById("modalImageView").src = src;
             document.getElementById("imageModal").style.display = "flex";
         }
-
         function closeImageModal() {
             document.getElementById("imageModal").style.display = "none";
-            document.getElementById("modalImageView").src = "";
         }
 
-        function openApproveModal(username) {
-            selectedUsername = username;
-            document.getElementById("modalUserTitle").innerText = `User: ${username}`;
-            document.getElementById("approveModal").style.display = "flex";
-        }
-
-        function closeApproveModal() {
-            document.getElementById("approveModal").style.display = "none";
-            selectedUsername = null;
-        }
-
-        async function confirmApproval() {
-            if (!selectedUsername) return;
-            const btn = document.getElementById("confirmApproveBtn");
-            const duration = parseInt(document.getElementById("approveDuration").value);
-            btn.disabled = true;
-
-            const newKey = `SKY-USER-${randomString(4)}`;
-            let exp = new Date();
-            if (duration === 99999) exp.setFullYear(exp.getFullYear() + 50);
-            else exp.setDate(exp.getDate() + duration);
-
-            const keyData = {
-                customer_name: selectedUsername,
-                key: newKey,
-                key_type: "mod_menu",
-                durationDays: duration,
-                expires_at: exp.toISOString(),
-                max_devices: "1",
-                bound_devices: ""
-            };
-
-            try {
-                await fetch(`${FIREBASE_KEYS}/${newKey}.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(keyData)
-                });
-
-                await fetch(`${FIREBASE_USERS}/${selectedUsername}.json`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        status: "approved",
-                        key: newKey
-                    })
-                });
-
-                alert(`Approved! Key ${newKey} assigned to ${selectedUsername}`);
-                closeApproveModal();
-                fetchPortalUsers();
-            } catch (err) {
-                alert("Approval Error: " + err.message);
-            } finally {
-                btn.disabled = false;
-            }
-        }
-
-        async function blockUser(username, key) {
-            if (!confirm(`Block user ${username}? Assigned key will be invalidated.`)) return;
-
-            await fetch(`${FIREBASE_USERS}/${username}.json`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: "blocked" })
-            });
-
-            if (key && key.trim() !== "") {
-                await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
-            }
-
-            alert(`User ${username} and key blocked!`);
+        async function blockPortalUser(username, key) {
+            if (!confirm(`Block user ${username}?`)) return;
+            await fetch(`${FIREBASE_USERS}/${username}.json`, { method: "PATCH", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ status: "blocked" }) });
+            if (key) await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
             fetchPortalUsers();
         }
 
-        async function unblockUser(username) {
-            await fetch(`${FIREBASE_USERS}/${username}.json`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: "approved" })
-            });
+        async function unblockPortalUser(username) {
+            await fetch(`${FIREBASE_USERS}/${username}.json`, { method: "PATCH", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ status: "approved" }) });
             fetchPortalUsers();
         }
 
-        async function deleteUserRequest(username, key) {
-            if (!confirm(`Delete user request for ${username}?`)) return;
+        async function deletePortalUser(username, key) {
+            if (!confirm(`Delete user ${username}?`)) return;
             await fetch(`${FIREBASE_USERS}/${username}.json`, { method: "DELETE" });
             if (key) await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
             fetchPortalUsers();
         }
 
-        // Initial Load
-        fetchPortalUsers();
+        async function createResellerAccount() {
+            const username = document.getElementById("newResellerUser").value.trim().toLowerCase();
+            const password = document.getElementById("newResellerPass").value.trim();
+            const credits = parseInt(document.getElementById("newResellerCredits").value) || 10;
+
+            if (!username || !password) {
+                alert("Please enter username and password!");
+                return;
+            }
+
+            try {
+                const checkRes = await fetch(`${FIREBASE_RESELLERS}/${username}.json`);
+                const existing = await checkRes.json();
+                if (existing) {
+                    alert("This reseller username already exists!");
+                    return;
+                }
+
+                const resellerData = {
+                    username: username,
+                    password: password,
+                    credits: credits,
+                    total_keys_generated: 0,
+                    status: "active",
+                    created_at: new Date().toISOString()
+                };
+
+                await fetch(`${FIREBASE_RESELLERS}/${username}.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(resellerData)
+                });
+
+                alert(`Reseller '${username}' created with ${credits} credits!`);
+                document.getElementById("newResellerUser").value = "";
+                document.getElementById("newResellerPass").value = "";
+                fetchResellers();
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        }
+
+        async function fetchResellers() {
+            try {
+                const res = await fetch(`${FIREBASE_RESELLERS}.json`);
+                const data = await res.json();
+                liveResellersList = data ? Object.values(data).reverse() : [];
+                renderResellers();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderResellers() {
+            const tbody = document.getElementById("resellerTableBody");
+            if (liveResellersList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No reseller accounts created yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = "";
+            liveResellersList.forEach(r => {
+                const tr = document.createElement("tr");
+                const statusBadge = r.status === "active" 
+                    ? `<span class="status-badge status-active">Active</span>`
+                    : `<span class="status-badge status-blocked">Blocked</span>`;
+
+                tr.innerHTML = `
+                    <td style="color:#fff; font-weight:bold;">${r.username}</td>
+                    <td style="color:var(--primary); font-weight:bold; font-size:15px;">${r.credits} Credits</td>
+                    <td>${r.total_keys_generated || 0}</td>
+                    <td>${statusBadge}</td>
+                    <td style="color:var(--text-dim); font-size:12px;">${new Date(r.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-action btn-recharge" onclick="openRechargeModal('${r.username}')">+ Add Credits</button>
+                            ${r.status === 'active' 
+                                ? `<button class="btn-action btn-block" onclick="toggleResellerStatus('${r.username}', 'blocked')">Block</button>` 
+                                : `<button class="btn-action btn-approve" onclick="toggleResellerStatus('${r.username}', 'active')">Unblock</button>`}
+                            <button class="btn-action btn-block" onclick="deleteReseller('${r.username}')">Delete</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openRechargeModal(username) {
+            selectedResellerForRecharge = liveResellersList.find(r => r.username === username);
+            if (!selectedResellerForRecharge) return;
+            document.getElementById("rechargeResellerTitle").innerText = `Reseller: ${username} (Current: ${selectedResellerForRecharge.credits} Credits)`;
+            document.getElementById("rechargeModal").style.display = "flex";
+        }
+
+        function closeRechargeModal() {
+            document.getElementById("rechargeModal").style.display = "none";
+            selectedResellerForRecharge = null;
+        }
+
+        async function confirmCreditRecharge() {
+            const add = parseInt(document.getElementById("addCreditAmount").value);
+            if (isNaN(add) || add <= 0 || !selectedResellerForRecharge) return;
+
+            const btn = document.getElementById("confirmRechargeBtn");
+            btn.disabled = true;
+
+            const newTotal = (selectedResellerForRecharge.credits || 0) + add;
+
+            try {
+                await fetch(`${FIREBASE_RESELLERS}/${selectedResellerForRecharge.username}.json`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ credits: newTotal })
+                });
+
+                alert(`Added ${add} credits! New balance for ${selectedResellerForRecharge.username}: ${newTotal} Credits.`);
+                closeRechargeModal();
+                fetchResellers();
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function toggleResellerStatus(username, status) {
+            if (!confirm(`Set reseller ${username} to ${status}?`)) return;
+            await fetch(`${FIREBASE_RESELLERS}/${username}.json`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: status })
+            });
+            fetchResellers();
+        }
+
+        async function deleteReseller(username) {
+            if (!confirm(`Delete reseller ${username}?`)) return;
+            await fetch(`${FIREBASE_RESELLERS}/${username}.json`, { method: "DELETE" });
+            fetchResellers();
+        }
+
+        fetchLiveKeys();
     </script>
 </body>
 </html>
