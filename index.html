@@ -34,7 +34,7 @@
         }
 
         .container {
-            max-width: 1250px;
+            max-width: 1280px;
             margin: 0 auto;
         }
 
@@ -178,7 +178,7 @@
             border-collapse: collapse;
             text-align: left;
             font-size: 13px;
-            min-width: 820px;
+            min-width: 900px;
         }
 
         th {
@@ -239,6 +239,15 @@
             color: var(--warning);
         }
 
+        .device-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
         .action-btns {
             display: flex;
             gap: 6px;
@@ -269,6 +278,12 @@
             background-color: #1e293b;
             color: #38bdf8;
             border: 1px solid #0284c7;
+        }
+
+        .btn-hwid {
+            background-color: rgba(168, 85, 247, 0.15);
+            color: #d8b4fe;
+            border: 1px solid var(--violet);
         }
 
         .btn-recharge {
@@ -324,7 +339,7 @@
             <button class="nav-btn" id="tabResellerBtn" onclick="switchTab('reseller')">Reseller Hub</button>
         </div>
 
-        <!-- TAB 1: MASTER GENERATOR -->
+        <!-- ================= TAB 1: MASTER GENERATOR ================= -->
         <div id="homeSection">
             <div class="card">
                 <div class="card-title">Generate Admin License Key</div>
@@ -364,11 +379,11 @@
             </div>
         </div>
 
-        <!-- TAB 2: ALL KEYS -->
+        <!-- ================= TAB 2: ALL KEYS (FIXED DEVICE COLUMN) ================= -->
         <div id="manageSection" style="display: none;">
             <div class="card">
                 <div class="card-title">
-                    <span>Active License Keys</span>
+                    <span>Active License Keys & Device Bindings</span>
                     <button class="btn-copy" onclick="fetchLiveKeys()">Refresh Keys</button>
                 </div>
                 <div class="table-responsive">
@@ -378,7 +393,7 @@
                                 <th>Created By</th>
                                 <th>Customer</th>
                                 <th>License Key</th>
-                                <th>Devices</th>
+                                <th>Logged-in Devices (Used / Max)</th>
                                 <th>Time Remaining</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -392,7 +407,7 @@
             </div>
         </div>
 
-        <!-- TAB 3: PORTAL REQUESTS -->
+        <!-- ================= TAB 3: PORTAL REQUESTS ================= -->
         <div id="portalSection" style="display: none;">
             <div class="card">
                 <div class="card-title">
@@ -419,7 +434,7 @@
             </div>
         </div>
 
-        <!-- TAB 4: RESELLER HUB -->
+        <!-- ================= TAB 4: RESELLER HUB ================= -->
         <div id="resellerSection" style="display: none;">
             <!-- Create Reseller Account -->
             <div class="card">
@@ -582,6 +597,7 @@
             return { text: `${days}d ${hours}h`, isExpired: false };
         }
 
+        // ================= TAB 1: MASTER GENERATOR =================
         async function generateKey() {
             const btn = document.getElementById("generateBtn");
             const customer = document.getElementById("customerName").value.trim() || "Anonymous";
@@ -603,6 +619,7 @@
                 expires_at: exp.toISOString(),
                 max_devices: devices,
                 bound_devices: "",
+                status: "active",
                 created_by: "ADMIN (OWNER SKY)",
                 credits_deducted: 0,
                 created_at: new Date().toISOString()
@@ -622,6 +639,7 @@
             }
         }
 
+        // ================= TAB 2: KEYS WITH DEVICE TRACKING =================
         async function fetchLiveKeys() {
             try {
                 const res = await fetch(`${FIREBASE_KEYS}.json`);
@@ -642,20 +660,67 @@
                 const rem = calculateRemaining(k.expires_at);
                 const statusBadge = rem.isExpired 
                     ? `<span class="status-badge status-expired">Expired</span>` 
-                    : `<span class="status-badge status-active">Active</span>`;
+                    : (k.status === "blocked" ? `<span class="status-badge status-blocked">Blocked</span>` : `<span class="status-badge status-active">Active</span>`);
+
+                // ACCURATE DEVICE COUNT CALCULATION
+                let boundCount = 0;
+                if (k.bound_devices) {
+                    if (Array.isArray(k.bound_devices)) {
+                        boundCount = k.bound_devices.filter(Boolean).length;
+                    } else if (typeof k.bound_devices === "object") {
+                        boundCount = Object.keys(k.bound_devices).length;
+                    } else if (typeof k.bound_devices === "string") {
+                        const str = k.bound_devices.trim();
+                        if (str !== "") {
+                            boundCount = str.includes(",") ? str.split(",").filter(Boolean).length : 1;
+                        }
+                    }
+                }
+
+                const maxDevStr = k.max_devices || "1";
+                const isLimitReached = (maxDevStr !== "Unlimited" && boundCount >= parseInt(maxDevStr));
+                
+                const deviceBadge = `
+                    <span class="device-badge" style="background: ${boundCount > 0 ? (isLimitReached ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)') : 'rgba(148, 163, 184, 0.1)'}; 
+                                                      color: ${boundCount > 0 ? (isLimitReached ? 'var(--danger)' : 'var(--warning)') : 'var(--text-dim)'}; 
+                                                      border: 1px solid ${boundCount > 0 ? (isLimitReached ? 'var(--danger)' : 'var(--warning)') : 'var(--border)'};">
+                        ${boundCount} / ${maxDevStr} Logged
+                    </span>
+                `;
 
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td style="color:var(--violet); font-weight:600;">${k.created_by || 'ADMIN'}</td>
                     <td style="color:#fff; font-weight:600;">${k.customer_name || 'N/A'}</td>
                     <td><span class="key-text">${k.key}</span> <button class="btn-copy" onclick="copyText('${k.key}')">Copy</button></td>
-                    <td>${k.max_devices}</td>
+                    <td>${deviceBadge}</td>
                     <td>${rem.text}</td>
                     <td>${statusBadge}</td>
-                    <td><button class="btn-action btn-block" onclick="deleteRawKey('${k.key}')">Delete</button></td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-action btn-hwid" onclick="resetHWID('${k.key}')" title="Clear Bound Devices">Reset HWID</button>
+                            <button class="btn-action btn-block" onclick="deleteRawKey('${k.key}')">Delete</button>
+                        </div>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // RESET DEVICE HWID BINDING
+        async function resetHWID(key) {
+            if (!confirm(`Reset bound devices for key ${key}? This will allow the user to login on a new device.`)) return;
+            try {
+                await fetch(`${FIREBASE_KEYS}/${key}.json`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ bound_devices: "" })
+                });
+                alert(`HWID Reset successful for ${key}! Device count is now 0.`);
+                fetchLiveKeys();
+            } catch (err) {
+                alert("Error resetting device: " + err.message);
+            }
         }
 
         function renderResellerAudit() {
@@ -690,6 +755,7 @@
             fetchLiveKeys();
         }
 
+        // ================= TAB 3: PORTAL USERS =================
         async function fetchPortalUsers() {
             try {
                 const res = await fetch(`${FIREBASE_USERS}.json`);
@@ -765,6 +831,7 @@
             fetchPortalUsers();
         }
 
+        // ================= TAB 4: RESELLER SYSTEM =================
         async function createResellerAccount() {
             const username = document.getElementById("newResellerUser").value.trim().toLowerCase();
             const password = document.getElementById("newResellerPass").value.trim();
@@ -884,7 +951,7 @@
                 closeRechargeModal();
                 fetchResellers();
             } catch (err) {
-                alert("Error: " + err.message);
+                alert("Error adding credits: " + err.message);
             } finally {
                 btn.disabled = false;
             }
@@ -901,7 +968,7 @@
         }
 
         async function deleteReseller(username) {
-            if (!confirm(`Delete reseller ${username}?`)) return;
+            if (!confirm(`Permanently delete reseller ${username}?`)) return;
             await fetch(`${FIREBASE_RESELLERS}/${username}.json`, { method: "DELETE" });
             fetchResellers();
         }
