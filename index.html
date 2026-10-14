@@ -34,7 +34,7 @@
         }
 
         .container {
-            max-width: 1150px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -197,7 +197,7 @@
             border-collapse: collapse;
             text-align: left;
             font-size: 13px;
-            min-width: 780px;
+            min-width: 820px;
         }
 
         th {
@@ -290,6 +290,14 @@
             border: 1px solid #0284c7;
         }
 
+        .btn-screenshot {
+            background-color: rgba(168, 85, 247, 0.2);
+            color: #d8b4fe;
+            border: 1px solid var(--violet);
+            margin-top: 6px;
+            display: inline-block;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -297,7 +305,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -309,7 +317,7 @@
             border-radius: 12px;
             padding: 22px;
             width: 90%;
-            max-width: 420px;
+            max-width: 440px;
         }
 
         .modal-footer {
@@ -426,7 +434,7 @@
                                 <th>Approval Status</th>
                                 <th>Assigned Key</th>
                                 <th>Feedback Status</th>
-                                <th>Submitted Feedback</th>
+                                <th>Submitted Feedback & Photo</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -472,6 +480,17 @@
             <div class="modal-footer">
                 <button class="btn-action" style="background:#24314c; color:#fff;" onclick="closeExtendModal()">Cancel</button>
                 <button class="btn-action btn-extend" id="confirmExtendBtn" onclick="confirmExtendDays()">Add Days</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screenshot Viewer Modal -->
+    <div class="modal" id="imageModal" onclick="closeImageModal()">
+        <div class="modal-content" style="max-width: 680px; text-align: center; background: #0a0e17; padding: 18px;" onclick="event.stopPropagation()">
+            <h3 style="margin-bottom: 14px; color: var(--primary);">Attached Screenshot Proof</h3>
+            <img id="modalImageView" src="" style="width: 100%; max-height: 480px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border);" alt="User Screenshot">
+            <div class="modal-footer" style="justify-content: center; margin-top: 14px;">
+                <button class="btn-action" style="background:#24314c; color:#fff; padding: 8px 20px;" onclick="closeImageModal()">Close</button>
             </div>
         </div>
     </div>
@@ -699,13 +718,18 @@
                 if (u.status === "approved") statusBadge = `<span class="status-badge status-approved">Approved</span>`;
                 if (u.status === "blocked") statusBadge = `<span class="status-badge status-blocked">Blocked</span>`;
 
+                let screenshotBtn = "";
+                if (u.feedback_image) {
+                    screenshotBtn = `<br><button class="btn-action btn-screenshot" onclick="openImageModalByUsername('${u.username}')">View Screenshot</button>`;
+                }
+
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td style="color:#fff; font-weight:bold;">${u.username}</td>
                     <td>${statusBadge}</td>
                     <td>${u.key ? `<span class="key-text">${u.key}</span>` : '<span style="color:var(--text-dim);">None</span>'}</td>
                     <td>${fbBadge}</td>
-                    <td style="max-width:280px; white-space:normal; font-size:12px; color:#cbd5e1;">${u.feedback_text || 'No feedback submitted yet'}</td>
+                    <td style="max-width:320px; white-space:pre-wrap; font-size:12px; color:#cbd5e1; line-height:1.4;">${u.feedback_text || 'No feedback submitted yet'}${screenshotBtn}</td>
                     <td>
                         <div class="action-btns">
                             ${u.status !== 'approved' ? `<button class="btn-action btn-approve" onclick="openApproveModal('${u.username}')">Approve</button>` : ''}
@@ -723,6 +747,18 @@
             } else {
                 badge.style.display = "none";
             }
+        }
+
+        function openImageModalByUsername(username) {
+            const user = liveUsersList.find(u => u.username === username);
+            if (!user || !user.feedback_image) return;
+            document.getElementById("modalImageView").src = user.feedback_image;
+            document.getElementById("imageModal").style.display = "flex";
+        }
+
+        function closeImageModal() {
+            document.getElementById("imageModal").style.display = "none";
+            document.getElementById("modalImageView").src = "";
         }
 
         function openApproveModal(username) {
