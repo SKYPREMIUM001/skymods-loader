@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKY MODS - Reseller Portal</title>
+    <style>
+        :root {
+            --bg-main: #0a0e17;
+            --bg-card: #121927;
+            --bg-input: #1a2336;
+            --primary: #00e5ff;
+            --violet: #a855f7;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: #232f46;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--primary);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .credit-badge {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        input, select {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            padding: 12px 14px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-main {
+            background: linear-gradient(90deg, var(--primary), var(--violet));
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .cost-calculator {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px dashed var(--warning);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--warning);
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 500px;
+        }
+
+        th {
+            background-color: var(--bg-input);
+            color: var(--text-dim);
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .key-text {
+            font-family: monospace;
+            color: var(--primary);
+            background: rgba(0, 229, 255, 0.08);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .btn-copy {
+            background: #24314c;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- AUTH VIEW -->
+    <div class="card" id="authView">
+        <div class="header">
+            <h1>SKY MODS</h1>
+            <p>Authorized Reseller Portal</p>
+        </div>
+        <form onsubmit="handleResellerLogin(event)">
+            <div class="form-group">
+                <label>Reseller Username</label>
+                <input type="text" id="resellerUsernameInput" placeholder="Enter assigned username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="resellerPasswordInput" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-main" id="loginBtn">Sign In</button>
+        </form>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboardView" style="display: none;">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div>
+                    <span style="font-size: 12px; color: var(--text-dim);">Reseller:</span>
+                    <b id="displayResellerName" style="color: var(--primary);"></b>
+                </div>
+                <button class="btn-copy" onclick="logout()">Sign Out</button>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 18px;">
+                <div class="credit-badge">Available Balance: <span id="displayResellerCredits">0</span> Credits</div>
+            </div>
+
+            <!-- KEY GENERATOR -->
+            <form onsubmit="handleGenerateKey(event)">
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    <input type="text" id="buyerName" placeholder="e.g. John VIP" required>
+                </div>
+                <div class="form-group">
+                    <label>Duration / Days</label>
+                    <select id="keyDays" onchange="calculateCost()">
+                        <option value="1">1 Day</option>
+                        <option value="2">2 Days</option>
+                        <option value="7">7 Days (1 Week)</option>
+                        <option value="15">15 Days</option>
+                        <option value="30">30 Days (1 Month)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Devices</label>
+                    <select id="keyDevices" onchange="calculateCost()">
+                        <option value="1">1 Device</option>
+                        <option value="2">2 Devices</option>
+                        <option value="3">3 Devices</option>
+                    </select>
+                </div>
+
+                <div class="cost-calculator">
+                    <span>Formula: (Days × Devices)</span>
+                    <b id="calculatedCostText">Deduction: 1 Credit</b>
+                </div>
+
+                <button type="submit" class="btn-main" id="genKeyBtn">+ Generate Customer Key</button>
+            </form>
+        </div>
+
+        <!-- RESELLER'S OWN KEYS -->
+        <div class="card">
+            <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary);">Your Generated Keys</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Key</th>
+                            <th>Days</th>
+                            <th>Cost</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resellerKeysTbody">
+                        <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const FIREBASE_RESELLERS = "https://skymodsloader-default-rtdb.firebaseio.com/resellers";
+    const FIREBASE_KEYS = "https://skymodsloader-default-rtdb.firebaseio.com/keys";
+
+    let currentReseller = null;
+
+    function randomString(length = 4) {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let res = "";
+        for (let i = 0; i < length; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+        return res;
+    }
+
+    function calculateCost() {
+        const days = parseInt(document.getElementById("keyDays").value) || 1;
+        const devices = parseInt(document.getElementById("keyDevices").value) || 1;
+        const cost = days * devices;
+        document.getElementById("calculatedCostText").innerText = `Deduction: ${cost} Credits (${days}d × ${devices} dev)`;
+        return cost;
+    }
+
+    async function handleResellerLogin(e) {
+        e.preventDefault();
+        const user = document.getElementById("resellerUsernameInput").value.trim().toLowerCase();
+        const pass = document.getElementById("resellerPasswordInput").value.trim();
+        const btn = document.getElementById("loginBtn");
+
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`${FIREBASE_RESELLERS}/${user}.json`);
+            const data = await res.json();
+
+            if (!data || data.password !== pass) {
+                alert("Invalid Reseller Username or Password!");
+                btn.disabled = false;
+                return;
+            }
+
+            if (data.status === "blocked") {
+                alert("Your account is blocked by Admin!");
+                btn.disabled = false;
+                return;
+            }
+
+            currentReseller = data;
+            localStorage.setItem("sky_reseller_session", JSON.stringify(data));
+            loadDashboard();
+        } catch (err) {
+            alert("Network Error: " + err.message);
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    function loadDashboard() {
+        document.getElementById("authView").style.display = "none";
+        document.getElementById("dashboardView").style.display = "block";
+        document.getElementById("displayResellerName").innerText = currentReseller.username;
+        document.getElementById("displayResellerCredits").innerText = currentReseller.credits || 0;
+        calculateCost();
+        fetchMyKeys();
+    }
+
+    async function handleGenerateKey(e) {
+        e.preventDefault();
+        const buyer = document.getElementById("buyerName").value.trim();
+        const days = parseInt(document.getElementById("keyDays").value);
+        const devices = document.getElementById("keyDevices").value;
+        const cost = days * parseInt(devices);
+        const btn = document.getElementById("genKeyBtn");
+
+        if (currentReseller.credits < cost) {
+            alert(`Insufficient credits! Required: ${cost} Credits, Available: ${currentReseller.credits} Credits.\nPlease contact Admin to recharge.`);
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Generating...";
+
+        const newKey = `SKY-R4X-${randomString(4)}-${randomString(4)}`;
+        let exp = new Date();
+        exp.setDate(exp.getDate() + days);
+
+        const keyData = {
+            customer_name: buyer,
+            key: newKey,
+            key_type: "mod_menu",
+            durationDays: days,
+            expires_at: exp.toISOString(),
+            max_devices: devices,
+            bound_devices: "",
+            created_by: currentReseller.username,
+            credits_deducted: cost,
+            created_at: new Date().toISOString()
+        };
+
+        const remainingCredits = currentReseller.credits - cost;
+        const totalKeys = (currentReseller.total_keys_generated || 0) + 1;
+
+        try {
+            await fetch(`${FIREBASE_KEYS}/${newKey}.json`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(keyData)
+            });
+
+            await fetch(`${FIREBASE_RESELLERS}/${currentReseller.username}.json`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    credits: remainingCredits,
+                    total_keys_generated: totalKeys
+                })
+            });
+
+            currentReseller.credits = remainingCredits;
+            currentReseller.total_keys_generated = totalKeys;
+            localStorage.setItem("sky_reseller_session", JSON.stringify(currentReseller));
+            document.getElementById("displayResellerCredits").innerText = remainingCredits;
+
+            alert(`Key Generated Successfully!\nKey: ${newKey}\nCredits Deducted: ${cost}`);
+            document.getElementById("buyerName").value = "";
+            fetchMyKeys();
+        } catch (err) {
+            alert("Error: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "+ Generate Customer Key";
+        }
+    }
+
+    async function fetchMyKeys() {
+        const tbody = document.getElementById("resellerKeysTbody");
+        try {
+            const res = await fetch(`${FIREBASE_KEYS}.json`);
+            const data = await res.json();
+            const allKeys = data ? Object.values(data).reverse() : [];
+            const myKeys = allKeys.filter(k => k.created_by === currentReseller.username);
+
+            if (myKeys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No keys generated yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = "";
+            myKeys.forEach(k => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="color:#fff; font-weight:600;">${k.customer_name}</td>
+                    <td><span class="key-text">${k.key}</span></td>
+                    <td>${k.durationDays}d</td>
+                    <td style="color:var(--warning);">${k.credits_deducted || 1} Cr</td>
+                    <td><button class="btn-copy" onclick="copyKey('${k.key}')">Copy</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function copyKey(k) {
+        navigator.clipboard.writeText(k).then(() => alert("Copied: " + k));
+    }
+
+    function logout() {
+        localStorage.removeItem("sky_reseller_session");
+        location.reload();
+    }
+
+    window.onload = function() {
+        const saved = localStorage.getItem("sky_reseller_session");
+        if (saved) {
+            currentReseller = JSON.parse(saved);
+            fetch(`${FIREBASE_RESELLERS}/${currentReseller.username}.json`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.status !== "blocked") {
+                        currentReseller = data;
+                        localStorage.setItem("sky_reseller_session", JSON.stringify(data));
+                        loadDashboard();
+                    } else {
+                        logout();
+                    }
+                })
+                .catch(() => loadDashboard());
+        }
+    };
+</script>
+</body>
+</html>
