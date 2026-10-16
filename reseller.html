@@ -38,7 +38,7 @@
 
         .container {
             width: 100%;
-            max-width: 820px;
+            max-width: 860px;
         }
 
         .card {
@@ -162,7 +162,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 680px;
+            min-width: 720px;
         }
 
         th {
@@ -189,6 +189,15 @@
             border-radius: 6px;
         }
 
+        .device-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
         .status-badge {
             display: inline-block;
             padding: 4px 8px;
@@ -205,11 +214,6 @@
         .status-blocked {
             background: rgba(239, 68, 68, 0.15);
             color: var(--danger);
-        }
-
-        .status-expired {
-            background: rgba(148, 163, 184, 0.15);
-            color: var(--text-dim);
         }
 
         .action-btns {
@@ -304,7 +308,7 @@
                     <div class="form-group">
                         <label>Duration / Days</label>
                         <select id="keyDays" onchange="calculateCost()">
-                            <option value="1">1 Day (1 Credit / device)</option>
+                            <option value="1">1 Day</option>
                             <option value="2">2 Days</option>
                             <option value="7">7 Days (1 Week)</option>
                             <option value="15">15 Days</option>
@@ -317,6 +321,12 @@
                             <option value="1">1 Device</option>
                             <option value="2">2 Devices</option>
                             <option value="3">3 Devices</option>
+                            <option value="5">5 Devices</option>
+                            <option value="10">10 Devices</option>
+                            <option value="15">15 Devices</option>
+                            <option value="100">100 Devices</option>
+                            <option value="200">200 Devices</option>
+                            <option value="Unlimited">Unlimited Devices</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -325,7 +335,7 @@
                     </div>
 
                     <div class="cost-calculator">
-                        <span>Rate: <b>Days × Devices</b></span>
+                        <span>Formula: <b>Days × Devices</b></span>
                         <b id="calculatedCostText">Cost: 1 Credit</b>
                     </div>
                 </div>
@@ -337,7 +347,10 @@
         <!-- GENERATED KEYS MANAGEMENT -->
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                <h3 style="font-size: 16px; color: var(--primary);">Your Generated Keys & Controls</h3>
+                <div>
+                    <h3 style="font-size: 16px; color: var(--primary);">Active Generated Keys</h3>
+                    <span style="font-size: 11px; color: var(--text-dim);">Expired keys are automatically hidden</span>
+                </div>
                 <button class="btn-sm btn-copy" onclick="fetchMyKeys()">Refresh List</button>
             </div>
             <div class="table-responsive">
@@ -346,14 +359,14 @@
                         <tr>
                             <th>Customer</th>
                             <th>License Key</th>
-                            <th>Validity</th>
-                            <th>Devices</th>
+                            <th>Time Left</th>
+                            <th>Devices (Used / Max)</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="resellerKeysTbody">
-                        <tr><td colspan="6" style="text-align:center; padding: 16px;">Loading your keys...</td></tr>
+                        <tr><td colspan="6" style="text-align:center; padding: 16px;">Loading your active keys...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -377,9 +390,10 @@
 
     function calculateCost() {
         const days = parseInt(document.getElementById("keyDays").value) || 1;
-        const devices = parseInt(document.getElementById("keyDevices").value) || 1;
-        const cost = days * devices;
-        document.getElementById("calculatedCostText").innerText = `Cost: ${cost} Credits (${days}d × ${devices} dev)`;
+        const devVal = document.getElementById("keyDevices").value;
+        const devMultiplier = devVal === "Unlimited" ? 50 : (parseInt(devVal) || 1);
+        const cost = days * devMultiplier;
+        document.getElementById("calculatedCostText").innerText = `Cost: ${cost} Credits (${days}d × ${devVal} dev)`;
         return cost;
     }
 
@@ -432,7 +446,7 @@
         const days = parseInt(document.getElementById("keyDays").value);
         const devices = document.getElementById("keyDevices").value;
         const prefix = document.getElementById("keyPrefix").value.trim() || "SKY";
-        const cost = days * parseInt(devices);
+        const cost = calculateCost();
         const btn = document.getElementById("genKeyBtn");
 
         if (currentReseller.credits < cost) {
@@ -502,33 +516,66 @@
             const res = await fetch(`${FIREBASE_KEYS}.json`);
             const data = await res.json();
             const allKeys = data ? Object.values(data).reverse() : [];
+            const now = new Date().getTime();
             
-            // STRICT FILTER: Only show keys created by this logged-in reseller
-            myKeysList = allKeys.filter(k => k.created_by === currentReseller.username);
+            // STRICT FILTER: Reseller's own keys AND NOT expired
+            myKeysList = allKeys.filter(k => {
+                if (k.created_by !== currentReseller.username) return false;
+                const expiry = new Date(k.expires_at).getTime();
+                if (expiry <= now) return false; // AUTO-REMOVE EXPIRED KEYS
+                return true;
+            });
 
             if (myKeysList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 16px;">No keys generated yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 16px; color:var(--text-dim);">No active keys found.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = "";
             myKeysList.forEach(k => {
-                const isExpired = new Date(k.expires_at) <= new Date();
-                const isBlocked = k.status === "blocked";
-
-                let statusBadge = `<span class="status-badge status-active">Active</span>`;
-                if (isBlocked) {
-                    statusBadge = `<span class="status-badge status-blocked">Blocked</span>`;
-                } else if (isExpired) {
-                    statusBadge = `<span class="status-badge status-expired">Expired</span>`;
+                // Device Bound Calculation
+                let boundCount = 0;
+                if (k.bound_devices) {
+                    if (Array.isArray(k.bound_devices)) {
+                        boundCount = k.bound_devices.filter(Boolean).length;
+                    } else if (typeof k.bound_devices === "object") {
+                        boundCount = Object.keys(k.bound_devices).length;
+                    } else if (typeof k.bound_devices === "string") {
+                        const str = k.bound_devices.trim();
+                        if (str !== "") {
+                            boundCount = str.includes(",") ? str.split(",").filter(Boolean).length : 1;
+                        }
+                    }
                 }
+
+                const maxDevStr = k.max_devices || "1";
+                const isLimitReached = (maxDevStr !== "Unlimited" && boundCount >= parseInt(maxDevStr));
+
+                const deviceBadge = `
+                    <span class="device-badge" style="background: ${boundCount > 0 ? (isLimitReached ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)') : 'rgba(148, 163, 184, 0.1)'}; 
+                                                      color: ${boundCount > 0 ? (isLimitReached ? 'var(--danger)' : 'var(--warning)') : 'var(--text-dim)'}; 
+                                                      border: 1px solid ${boundCount > 0 ? (isLimitReached ? 'var(--danger)' : 'var(--warning)') : 'var(--border)'};">
+                        ${boundCount} / ${maxDevStr} Logged
+                    </span>
+                `;
+
+                // Calculate Remaining Time
+                const diff = new Date(k.expires_at).getTime() - now;
+                const daysLeft = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hoursLeft = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const timeLeftText = `${daysLeft}d ${hoursLeft}h`;
+
+                const isBlocked = k.status === "blocked";
+                const statusBadge = isBlocked 
+                    ? `<span class="status-badge status-blocked">Blocked</span>` 
+                    : `<span class="status-badge status-active">Active</span>`;
 
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td style="color:#fff; font-weight:600;">${k.customer_name}</td>
                     <td><span class="key-text">${k.key}</span></td>
-                    <td>${k.durationDays}d</td>
-                    <td>${k.max_devices} Dev</td>
+                    <td style="color:var(--text-dim);">${timeLeftText}</td>
+                    <td>${deviceBadge}</td>
                     <td>${statusBadge}</td>
                     <td>
                         <div class="action-btns">
@@ -548,15 +595,11 @@
         }
     }
 
-    // TOGGLE ACTIVATE / DEACTIVATE
     async function toggleKeyStatus(key, newStatus) {
         const target = myKeysList.find(k => k.key === key);
-        if (!target || target.created_by !== currentReseller.username) {
-            alert("Unauthorized action!");
-            return;
-        }
+        if (!target) return;
 
-        const actionWord = newStatus === "blocked" ? "Block / Deactivate" : "Activate";
+        const actionWord = newStatus === "blocked" ? "Block" : "Activate";
         if (!confirm(`Are you sure you want to ${actionWord} key: ${key}?`)) return;
 
         try {
@@ -565,26 +608,20 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status: newStatus })
             });
-            alert(`Key is now ${newStatus.toUpperCase()}!`);
             fetchMyKeys();
         } catch (err) {
             alert("Error updating key: " + err.message);
         }
     }
 
-    // DELETE KEY
     async function deleteMyKey(key) {
         const target = myKeysList.find(k => k.key === key);
-        if (!target || target.created_by !== currentReseller.username) {
-            alert("Unauthorized action!");
-            return;
-        }
+        if (!target) return;
 
-        if (!confirm(`Are you sure you want to PERMANENTLY DELETE key: ${key}?\nThis cannot be undone.`)) return;
+        if (!confirm(`Are you sure you want to delete key: ${key}?`)) return;
 
         try {
             await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
-            alert(`Key ${key} permanently deleted!`);
             fetchMyKeys();
         } catch (err) {
             alert("Error deleting key: " + err.message);
