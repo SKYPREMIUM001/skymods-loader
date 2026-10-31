@@ -8,7 +8,7 @@
         :root {
             --bg-body: #040108;
             --bg-window: #080212;
-            --bg-card: rgba(18, 6, 33, 0.9);
+            --bg-card: rgba(18, 6, 33, 0.92);
             --bg-input: #180931;
             --border-purple: #3e1469;
             --neon-pink: #e024c3;
@@ -77,34 +77,34 @@
             cursor: pointer;
         }
 
-        /* HEADER BANNER WITH CHARACTER ART */
+        /* HEADER BANNER WITH REAL ANIME ART */
         .header-banner {
-            padding: 12px 24px 20px;
+            padding: 10px 24px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 16px;
             border-bottom: 2px solid #3b1464;
-            background: linear-gradient(180deg, rgba(88, 28, 135, 0.22), transparent);
+            background: linear-gradient(180deg, rgba(88, 28, 135, 0.25), transparent);
             position: relative;
         }
 
         .header-left-group {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 20px;
         }
 
-        /* ANIME MASCOT FRAME */
+        /* EXACT MASCOT ART CONTAINER */
         .mascot-avatar-frame {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
+            width: 86px;
+            height: 86px;
+            border-radius: 18px;
             border: 2px solid var(--neon-pink);
-            box-shadow: 0 0 20px var(--neon-pink);
+            box-shadow: 0 0 25px rgba(224, 36, 195, 0.7), inset 0 0 15px rgba(168, 85, 247, 0.4);
             overflow: hidden;
-            background: #1e0b36;
+            background: #150629;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -116,6 +116,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transform: scale(1.05);
         }
 
         .brand-title {
@@ -391,7 +392,7 @@
             transform: translateY(-1px);
         }
 
-        /* BOTTOM SARA BANNER WITH BUTTERFLY ART */
+        /* BOTTOM BANNER WITH NEON ART */
         .bottom-sara-banner {
             background: linear-gradient(180deg, #130724 0%, #090214 100%);
             border: 1.5px solid #4c1d95;
@@ -405,16 +406,6 @@
             position: relative;
             box-shadow: 0 0 25px rgba(168, 85, 247, 0.25);
             overflow: hidden;
-        }
-
-        .butterfly-svg {
-            position: absolute;
-            left: 20px;
-            bottom: 10px;
-            width: 70px;
-            height: 70px;
-            filter: drop-shadow(0 0 8px #e024c3);
-            opacity: 0.85;
         }
 
         .banner-center-title {
@@ -620,12 +611,13 @@
         <button class="win-btn" title="Close" style="color:#ef4444;">✕</button>
     </div>
 
-    <!-- HEADER BANNER WITH MASCOT IMAGE -->
+    <!-- HEADER BANNER -->
     <div class="header-banner">
         <div class="header-left-group">
             <div class="mascot-avatar-frame" title="SARA MODS Official Mascot">
-                <!-- If sara.png exists in your repo it will load, otherwise cute glowing crown mascot -->
-                <img src="sara.png" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/bottts/svg?seed=SaraCute&backgroundColor=1e0b36';" alt="Sara Mascot">
+                <!-- Loads sara.png directly from your GitHub repository -->
+                <img src="sara.png" onerror="this.style.display='none'; document.getElementById('crownFallback').style.display='block';" alt="Sara Mascot">
+                <span id="crownFallback" style="display:none; font-size:38px;">👑</span>
             </div>
             <div>
                 <h1 class="brand-title">SARA OFFICIAL</h1>
@@ -643,7 +635,7 @@
 
     <!-- APP BODY -->
     <div class="app-body">
-        <!-- ONLY SIDEBAR CONTROLS NOW -->
+        <!-- SIDEBAR -->
         <div class="app-sidebar">
             <div>
                 <div class="sidebar-brand">
@@ -673,7 +665,7 @@
             </div>
         </div>
 
-        <!-- RIGHT CONTENT -->
+        <!-- MAIN CONTENT -->
         <div class="app-content">
 
             <!-- TAB 1: MASTER GENERATOR -->
@@ -868,15 +860,8 @@
                 </div>
             </div>
 
-            <!-- BOTTOM SARA BANNER WITH NEON BUTTERFLY ART -->
+            <!-- BOTTOM BANNER -->
             <div class="bottom-sara-banner">
-                <!-- SVG Glowing Butterfly Art -->
-                <svg class="butterfly-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M50 48C45 35 25 25 15 35C5 45 15 70 50 85C85 70 95 45 85 35C75 25 55 35 50 48Z" stroke="#e024c3" stroke-width="2" fill="rgba(224, 36, 195, 0.15)"/>
-                    <path d="M50 48C46 38 32 30 25 38C18 46 25 65 50 78C75 65 82 46 75 38C68 30 54 38 50 48Z" stroke="#a855f7" stroke-width="1.5"/>
-                    <circle cx="50" cy="50" r="3" fill="#ffffff"/>
-                </svg>
-
                 <div class="banner-center-title">
                     <span>👑</span> S A R A • O F F I C I A L
                 </div>
@@ -887,7 +872,7 @@
     </div>
 </div>
 
-<!-- Recharge Reseller Modal -->
+<!-- Recharge Modal -->
 <div class="modal" id="rechargeModal">
     <div class="modal-content">
         <h3 style="margin-bottom: 8px; color:#fff;">Recharge SARA Credits</h3>
@@ -935,7 +920,6 @@
         document.getElementById("portalSection").style.display = tab === "portal" ? "block" : "none";
         document.getElementById("resellerSection").style.display = tab === "reseller" ? "block" : "none";
 
-        // Sync Left Sidebar Buttons
         document.getElementById("sideHomeBtn").classList.toggle("active", tab === "home");
         document.getElementById("sideManageBtn").classList.toggle("active", tab === "manage");
         document.getElementById("sidePortalBtn").classList.toggle("active", tab === "portal");
@@ -972,7 +956,6 @@
         return { text: `${days}d ${hours}h`, isExpired: false };
     }
 
-    // GENERATE KEY
     async function generateKey() {
         const btn = document.getElementById("generateBtn");
         const customer = document.getElementById("customerName").value.trim() || "Anonymous";
@@ -1014,7 +997,6 @@
         }
     }
 
-    // FETCH KEYS
     async function fetchLiveKeys() {
         try {
             const res = await fetch(`${FIREBASE_KEYS}.json`);
@@ -1150,7 +1132,6 @@
         fetchLiveKeys();
     }
 
-    // PORTAL USERS
     async function fetchPortalUsers() {
         try {
             const res = await fetch(`${FIREBASE_USERS}.json`);
@@ -1222,7 +1203,6 @@
         fetchPortalUsers();
     }
 
-    // RESELLERS
     async function createResellerAccount() {
         const username = document.getElementById("newResellerUser").value.trim().toLowerCase();
         const password = document.getElementById("newResellerPass").value.trim();
