@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SARA MODS - Master Admin Dashboard</title>
+    <title>SARA OFFICIAL - Admin Panel</title>
     <style>
         :root {
-            --bg-main: #090214;
-            --bg-card: #130724;
-            --bg-input: #1d0e36;
-            --border: #3b185f;
-            --border-glow: #a855f7;
-            --primary: #c026d3;
-            --primary-hover: #d946ef;
-            --primary-glow: rgba(192, 38, 211, 0.4);
-            --neon-violet: #a855f7;
-            --crown-gold: #fbbf24;
+            --bg-body: #05010b;
+            --bg-window: #090214;
+            --bg-card: rgba(18, 6, 33, 0.85);
+            --bg-card-inner: #150826;
+            --bg-input: #1a0a33;
+            --border-purple: #3b1464;
+            --neon-pink: #e024c3;
+            --neon-purple: #a855f7;
+            --neon-violet: #c026d3;
+            --neon-glow: 0 0 15px rgba(224, 36, 195, 0.45);
+            --neon-border-glow: 0 0 12px rgba(168, 85, 247, 0.6);
+            --gold: #fbbf24;
+            --text-white: #ffffff;
+            --text-dim: #c4b5fd;
+            --text-muted: #8b5cf6;
             --danger: #ef4444;
-            --warning: #f59e0b;
             --success: #10b981;
-            --text-main: #fdf4ff;
-            --text-dim: #c084fc;
+            --warning: #f59e0b;
         }
 
         * {
@@ -31,188 +34,444 @@
         }
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            padding: 16px;
-            background-image: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.15), transparent 70%);
+            background-color: var(--bg-body);
+            color: var(--text-white);
+            padding: 14px;
             min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-
-        header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 22px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--border);
+            justify-content: center;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.18), transparent 35%),
+                radial-gradient(circle at 90% 90%, rgba(224, 36, 195, 0.15), transparent 40%);
         }
 
-        .logo-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-title {
-            font-size: 26px;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            background: linear-gradient(135deg, #ffffff 20%, #d8b4fe 60%, var(--primary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            text-shadow: 0 0 25px rgba(192, 38, 211, 0.6);
-        }
-
-        .logo-sub {
-            font-size: 11px;
-            color: var(--crown-gold);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
-        .badge-credit {
-            background: rgba(192, 38, 211, 0.12);
-            border: 1px solid var(--primary);
-            color: #f5d0fe;
-            padding: 6px 14px;
+        /* OUTER DESKTOP APP WINDOW */
+        .window-wrapper {
+            width: 100%;
+            max-width: 1240px;
+            background: var(--bg-window);
+            border: 2px solid #581c87;
             border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .nav-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-        }
-
-        .nav-btn {
-            flex: 1;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-dim);
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .nav-btn.active {
-            background: linear-gradient(135deg, rgba(192, 38, 211, 0.25), rgba(168, 85, 247, 0.15));
-            border-color: var(--primary);
-            color: #fff;
-            box-shadow: 0 0 12px rgba(192, 38, 211, 0.35);
-        }
-
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 22px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            position: relative;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 20px;
-            right: 20px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-            color: #fdf4ff;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
-
-        @media (min-width: 600px) {
-            .form-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .form-group {
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.35), inset 0 0 20px rgba(168, 85, 247, 0.12);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+        }
+
+        /* TITLEBAR & WINDOW CONTROLS */
+        .window-titlebar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px 0;
+        }
+
+        .win-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            border: 1px solid #4c1d95;
+            background: #1e0b36;
+            color: #d8b4fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+            box-shadow: 0 0 6px rgba(168, 85, 247, 0.3);
+        }
+
+        /* HEADER BANNER */
+        .header-banner {
+            padding: 10px 24px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            border-bottom: 2px solid #3b1464;
+            background: linear-gradient(180deg, rgba(88, 28, 135, 0.18), transparent);
+        }
+
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .title-crown {
+            font-size: 32px;
+            filter: drop-shadow(0 0 10px var(--gold));
+        }
+
+        .brand-title {
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-style: italic;
+            background: linear-gradient(180deg, #ffffff 10%, #f5d0fe 45%, #c026d3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px rgba(224, 36, 195, 0.6);
+            line-height: 1;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            color: #fdf4ff;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
             gap: 6px;
         }
 
-        label {
+        .admin-badge-card {
+            background: rgba(26, 10, 51, 0.9);
+            border: 1.5px solid var(--neon-pink);
+            border-radius: 12px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 0 15px rgba(224, 36, 195, 0.35);
+        }
+
+        .admin-badge-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .admin-badge-info h4 {
             font-size: 12px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-
-        input, select {
-            background-color: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 12px 14px;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            transition: 0.2s;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 10px var(--primary-glow);
-        }
-
-        .btn-main {
-            background: linear-gradient(135deg, #c026d3, #9333ea);
-            color: #ffffff;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
             font-weight: 700;
-            font-size: 15px;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-badge-info span {
+            font-size: 11px;
+            color: #d8b4fe;
+        }
+
+        /* MAIN APP LAYOUT (SIDEBAR + CONTENT) */
+        .app-body {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 600px;
+        }
+
+        @media (max-width: 900px) {
+            .app-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* LEFT SIDEBAR */
+        .app-sidebar {
+            background: rgba(12, 4, 24, 0.95);
+            border-right: 2px solid #3b1464;
+            padding: 20px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .sidebar-brand {
+            margin-bottom: 15px;
+            padding-left: 6px;
+        }
+
+        .sidebar-brand h3 {
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-brand span {
+            color: var(--neon-pink);
+        }
+
+        .sidebar-brand small {
+            display: block;
+            font-size: 10px;
+            color: var(--gold);
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-top: 2px;
+        }
+
+        .side-nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .side-nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+        }
+
+        .side-nav-btn:hover {
+            background: rgba(168, 85, 247, 0.1);
+            color: #ffffff;
+            border-color: #581c87;
+        }
+
+        .side-nav-btn.active {
+            background: linear-gradient(90deg, rgba(224, 36, 195, 0.25), rgba(168, 85, 247, 0.15));
+            border: 1.5px solid var(--neon-pink);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(224, 36, 195, 0.35);
+        }
+
+        .side-nav-btn .icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-bottom-badge {
+            text-align: center;
+            padding: 16px 10px;
+            border-top: 1px solid #2e1065;
+        }
+
+        .sidebar-bottom-badge .logo-glow {
+            font-size: 20px;
+            font-weight: 900;
+            font-style: italic;
+            background: linear-gradient(180deg, #fff, var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(224, 36, 195, 0.5);
+        }
+
+        .sidebar-bottom-badge p {
+            font-size: 11px;
+            color: var(--neon-purple);
+            font-style: italic;
+            margin-top: 4px;
+        }
+
+        /* MAIN CONTENT AREA */
+        .app-content {
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        /* TOP HORIZONTAL PILL TABS */
+        .top-pill-tabs {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .pill-tab {
+            background: #17082e;
+            border: 1.5px solid #4c1d95;
+            color: var(--text-dim);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pill-tab:hover {
+            border-color: var(--neon-purple);
+            color: #ffffff;
+        }
+
+        .pill-tab.active {
+            background: linear-gradient(135deg, rgba(224, 36, 195, 0.3), rgba(168, 85, 247, 0.2));
+            border-color: var(--neon-pink);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(224, 36, 195, 0.4);
+        }
+
+        .pill-counter {
+            background: var(--neon-violet);
+            color: #fff;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* NEON GLASS CONTAINER CARD */
+        .neon-panel {
+            background: var(--bg-card);
+            border: 2px solid #581c87;
+            border-radius: 18px;
+            box-shadow: 0 0 25px rgba(88, 28, 135, 0.35);
+            padding: 24px;
+            position: relative;
+        }
+
+        .panel-header-badge {
+            background: linear-gradient(90deg, #701a75, #4c1d95, #701a75);
+            border: 1.5px solid var(--neon-pink);
+            border-radius: 12px;
+            padding: 10px 22px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            box-shadow: 0 0 18px rgba(224, 36, 195, 0.4);
+            margin-bottom: 24px;
+        }
+
+        /* FORM GRID & INPUTS */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        @media (max-width: 680px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #e9d5ff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-box {
+            background: var(--bg-input);
+            border: 1.5px solid #4c1d95;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 13px 16px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .input-box:focus {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(224, 36, 195, 0.4);
+            background: #200c3e;
+        }
+
+        /* VIBRANT GLOW GENERATE BUTTON */
+        .btn-neon-generate {
+            background: linear-gradient(90deg, #c026d3 0%, #e024c3 50%, #9333ea 100%);
+            border: 1.5px solid #f472b6;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 15px 24px;
+            border-radius: 12px;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
-            transition: 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 0 25px rgba(224, 36, 195, 0.6);
+            transition: all 0.25s ease;
+        }
+
+        .btn-neon-generate:hover {
+            box-shadow: 0 0 35px rgba(224, 36, 195, 0.85);
+            transform: translateY(-1px);
+        }
+
+        /* BOTTOM BANNER CARD */
+        .bottom-sara-banner {
+            background: linear-gradient(180deg, #130724 0%, #090214 100%);
+            border: 1.5px solid #4c1d95;
+            border-radius: 16px;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .banner-center-title {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .banner-center-sub {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--neon-pink);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 18px rgba(192, 38, 211, 0.4);
         }
 
-        .btn-main:hover {
-            background: linear-gradient(135deg, #d946ef, #a855f7);
-            box-shadow: 0 4px 22px rgba(217, 70, 239, 0.6);
+        .banner-motto {
+            font-size: 13px;
+            font-style: italic;
+            color: #e9d5ff;
+            margin-top: 6px;
         }
 
+        /* TABLE & CONTROLS */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -227,17 +486,17 @@
         }
 
         th {
-            background-color: var(--bg-input);
+            background-color: #17082e;
             color: var(--text-dim);
             padding: 12px 14px;
-            font-weight: 600;
-            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            border-bottom: 1.5px solid #3b1464;
             white-space: nowrap;
         }
 
         td {
             padding: 14px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #2e1065;
             vertical-align: middle;
             white-space: nowrap;
         }
@@ -245,29 +504,22 @@
         .key-text {
             font-family: monospace;
             color: #f5d0fe;
-            background: rgba(192, 38, 211, 0.15);
-            border: 1px solid rgba(192, 38, 211, 0.3);
+            background: rgba(224, 36, 195, 0.15);
+            border: 1px solid rgba(224, 36, 195, 0.4);
             padding: 6px 10px;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 700;
-            letter-spacing: 0.5px;
         }
 
         .btn-copy {
             background-color: #271342;
-            border: 1px solid var(--border);
+            border: 1px solid #4c1d95;
             color: #e9d5ff;
             padding: 6px 10px;
             border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-copy:hover {
-            border-color: var(--primary);
-            color: #fff;
         }
 
         .btn-purge {
@@ -278,7 +530,16 @@
             border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
+        }
+
+        .device-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 13px;
         }
 
         .status-badge {
@@ -286,7 +547,7 @@
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .status-active, .status-approved {
@@ -307,15 +568,6 @@
             border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
-        .device-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-family: monospace;
-            font-size: 13px;
-        }
-
         .action-btns {
             display: flex;
             gap: 6px;
@@ -327,8 +579,7 @@
             border-radius: 6px;
             cursor: pointer;
             border: none;
-            font-weight: 600;
-            transition: 0.2s;
+            font-weight: 700;
         }
 
         .btn-approve {
@@ -343,22 +594,16 @@
             border: 1px solid var(--danger);
         }
 
-        .btn-extend {
-            background-color: #271342;
-            color: #d8b4fe;
-            border: 1px solid var(--neon-violet);
-        }
-
         .btn-hwid {
-            background-color: rgba(192, 38, 211, 0.18);
+            background-color: rgba(224, 36, 195, 0.2);
             color: #f5d0fe;
-            border: 1px solid var(--primary);
+            border: 1px solid var(--neon-pink);
         }
 
         .btn-recharge {
-            background-color: rgba(251, 191, 36, 0.15);
-            color: var(--crown-gold);
-            border: 1px solid var(--crown-gold);
+            background-color: rgba(251, 191, 36, 0.2);
+            color: var(--gold);
+            border: 1px solid var(--gold);
         }
 
         .modal {
@@ -376,13 +621,13 @@
         }
 
         .modal-content {
-            background: var(--bg-card);
-            border: 1px solid var(--primary);
+            background: #120621;
+            border: 2px solid var(--neon-pink);
             border-radius: 14px;
             padding: 24px;
             width: 90%;
             max-width: 440px;
-            box-shadow: 0 0 30px var(--primary-glow);
+            box-shadow: 0 0 30px rgba(224, 36, 195, 0.4);
         }
 
         .modal-footer {
@@ -394,708 +639,727 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo-box">
-                <div>
-                    <h1 class="logo-title">SARA MODS</h1>
-                    <span class="logo-sub">Play Smarter With SARA MODS</span>
+
+<div class="window-wrapper">
+    <!-- TITLEBAR -->
+    <div class="window-titlebar">
+        <button class="win-btn" title="Minimize">−</button>
+        <button class="win-btn" title="Maximize">□</button>
+        <button class="win-btn" title="Close" style="color:#ef4444;">✕</button>
+    </div>
+
+    <!-- TOP BANNER -->
+    <div class="header-banner">
+        <div class="header-title-box">
+            <span class="title-crown">👑</span>
+            <div>
+                <h1 class="brand-title">SARA OFFICIAL</h1>
+                <p class="brand-subtitle">Play Smarter With Sara Official 💜</p>
+            </div>
+        </div>
+        <div class="admin-badge-card">
+            <div class="admin-badge-avatar">👤</div>
+            <div class="admin-badge-info">
+                <h4>Admin: OWNER SARA</h4>
+                <span>(Credits: Unlimited)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP BODY -->
+    <div class="app-body">
+        <!-- LEFT SIDEBAR -->
+        <div class="app-sidebar">
+            <div>
+                <div class="sidebar-brand">
+                    <h3>SARA <span>MODS</span></h3>
+                    <small>👑 ADMIN PANEL</small>
+                </div>
+
+                <div class="side-nav-list">
+                    <button class="side-nav-btn active" id="sideHomeBtn" onclick="switchTab('home')">
+                        <span class="icon">👑</span> Master Generator
+                    </button>
+                    <button class="side-nav-btn" id="sideManageBtn" onclick="switchTab('manage')">
+                        <span class="icon">🔑</span> Active Keys
+                    </button>
+                    <button class="side-nav-btn" id="sidePortalBtn" onclick="switchTab('portal')">
+                        <span class="icon">💬</span> Requests & Feedback
+                    </button>
+                    <button class="side-nav-btn" id="sideResellerBtn" onclick="switchTab('reseller')">
+                        <span class="icon">🛒</span> Reseller Hub
+                    </button>
                 </div>
             </div>
-            <div class="badge-credit">Admin: OWNER SARA (Credits: Unlimited)</div>
-        </header>
 
-        <div class="nav-tabs">
-            <button class="nav-btn active" id="tabHomeBtn" onclick="switchTab('home')">Master Generator</button>
-            <button class="nav-btn" id="tabManageBtn" onclick="switchTab('manage')">Active Keys <span id="activeKeysCountBadge" style="background:var(--primary); color:#fff; padding:2px 7px; border-radius:10px; font-size:11px; margin-left:4px; font-weight:bold;">0</span></button>
-            <button class="nav-btn" id="tabPortalBtn" onclick="switchTab('portal')">Requests & Feedback <span id="pendingCountBadge" style="background:var(--danger); color:#fff; padding:2px 6px; border-radius:10px; font-size:11px; margin-left:4px; display:none;">0</span></button>
-            <button class="nav-btn" id="tabResellerBtn" onclick="switchTab('reseller')">Reseller Hub</button>
-        </div>
-
-        <!-- ================= TAB 1: MASTER GENERATOR ================= -->
-        <div id="homeSection">
-            <div class="card">
-                <div class="card-title">Generate SARA License Key</div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Customer Name</label>
-                        <input type="text" id="customerName" placeholder="e.g. Rahul VIP, Aryan">
-                    </div>
-                    <div class="form-group">
-                        <label>Duration / Validity</label>
-                        <select id="keyDuration">
-                            <option value="1">1 Day</option>
-                            <option value="2">2 Days</option>
-                            <option value="7">7 Days (1 Week)</option>
-                            <option value="15">15 Days</option>
-                            <option value="30">30 Days (1 Month)</option>
-                            <option value="365">1 Year (365 Days)</option>
-                            <option value="99999">Lifetime</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Max Allowed Devices</label>
-                        <select id="keyDevices">
-                            <option value="1">1 Device</option>
-                            <option value="2">2 Devices</option>
-                            <option value="3">3 Devices</option>
-                            <option value="5">5 Devices</option>
-                            <option value="10">10 Devices</option>
-                            <option value="15">15 Devices</option>
-                            <option value="100">100 Devices</option>
-                            <option value="200">200 Devices</option>
-                            <option value="Unlimited">Unlimited Devices</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Key Prefix</label>
-                        <input type="text" id="keyPrefix" value="SARA">
-                    </div>
-                </div>
-
-                <button class="btn-main" id="generateBtn" onclick="generateKey()">+ Generate SARA Key & Save</button>
+            <div class="sidebar-bottom-badge">
+                <div class="logo-glow">SARA OFFICIAL</div>
+                <p>Be Legendary...</p>
             </div>
         </div>
 
-        <!-- ================= TAB 2: ACTIVE KEYS (EXPIRED AUTO-REMOVED) ================= -->
-        <div id="manageSection" style="display: none;">
-            <div class="card">
-                <div class="card-title">
-                    <div>
-                        <span>Active SARA License Keys & Devices</span>
-                        <div style="font-size:12px; color:var(--text-dim); margin-top:3px;">Expired keys are automatically hidden from this list</div>
+        <!-- RIGHT CONTENT -->
+        <div class="app-content">
+            <!-- TOP PILL TABS -->
+            <div class="top-pill-tabs">
+                <button class="pill-tab active" id="tabHomeBtn" onclick="switchTab('home')">
+                    👑 Master Generator
+                </button>
+                <button class="pill-tab" id="tabManageBtn" onclick="switchTab('manage')">
+                    Active Keys <span class="pill-counter" id="activeKeysCountBadge">0</span>
+                </button>
+                <button class="pill-tab" id="tabPortalBtn" onclick="switchTab('portal')">
+                    Requests & Feedback <span class="pill-counter" id="pendingCountBadge" style="background:var(--danger); display:none;">0</span>
+                </button>
+                <button class="pill-tab" id="tabResellerBtn" onclick="switchTab('reseller')">
+                    Reseller Hub
+                </button>
+            </div>
+
+            <!-- ================= TAB 1: MASTER GENERATOR ================= -->
+            <div id="homeSection">
+                <div class="neon-panel">
+                    <div class="panel-header-badge">
+                        <span>👑</span> Generate SARA License Key
                     </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn-purge" onclick="purgeExpiredKeysFromDB()">Delete Expired from DB</button>
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="field-label"><span>👤</span> CUSTOMER NAME</label>
+                            <input type="text" class="input-box" id="customerName" placeholder="e.g. Rahul VIP, Aryan">
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label"><span>🕒</span> DURATION / VALIDITY</label>
+                            <select class="input-box" id="keyDuration">
+                                <option value="1">1 Day</option>
+                                <option value="2">2 Days</option>
+                                <option value="7">7 Days (1 Week)</option>
+                                <option value="15">15 Days</option>
+                                <option value="30">30 Days (1 Month)</option>
+                                <option value="365">1 Year (365 Days)</option>
+                                <option value="99999">Lifetime</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label"><span>🔲</span> MAX ALLOWED DEVICES</label>
+                            <select class="input-box" id="keyDevices">
+                                <option value="1">1 Device</option>
+                                <option value="2">2 Devices</option>
+                                <option value="3">3 Devices</option>
+                                <option value="5">5 Devices</option>
+                                <option value="10">10 Devices</option>
+                                <option value="15">15 Devices</option>
+                                <option value="100">100 Devices</option>
+                                <option value="200">200 Devices</option>
+                                <option value="Unlimited">Unlimited Devices</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label"><span>🛡️</span> KEY PREFIX</label>
+                            <input type="text" class="input-box" id="keyPrefix" value="SARA">
+                        </div>
+                    </div>
+
+                    <button class="btn-neon-generate" id="generateBtn" onclick="generateKey()">
+                        <span>⚡</span> + GENERATE SARA KEY & SAVE
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= TAB 2: ACTIVE KEYS ================= -->
+            <div id="manageSection" style="display: none;">
+                <div class="neon-panel">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                        <div class="panel-header-badge" style="margin-bottom:0;">
+                            <span>🔑</span> Active SARA Keys & Devices
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-purge" onclick="purgeExpiredKeysFromDB()">Delete Expired from DB</button>
+                            <button class="btn-copy" onclick="fetchLiveKeys()">Refresh</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Created By</th>
+                                    <th>Customer</th>
+                                    <th>License Key</th>
+                                    <th>Devices (Used / Max)</th>
+                                    <th>Time Remaining</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keyTableBody">
+                                <tr><td colspan="7" style="text-align:center; padding: 20px;">Loading active keys...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 3: PORTAL REQUESTS ================= -->
+            <div id="portalSection" style="display: none;">
+                <div class="neon-panel">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <div class="panel-header-badge" style="margin-bottom:0;">
+                            <span>💬</span> Portal Users & Feedbacks
+                        </div>
+                        <button class="btn-copy" onclick="fetchPortalUsers()">Refresh Requests</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Approval Status</th>
+                                    <th>Assigned Key</th>
+                                    <th>Feedback Status</th>
+                                    <th>Submitted Feedback & Photo</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="portalTableBody">
+                                <tr><td colspan="6" style="text-align:center; padding: 20px;">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 4: RESELLER HUB ================= -->
+            <div id="resellerSection" style="display: none;">
+                <div class="neon-panel" style="margin-bottom:20px;">
+                    <div class="panel-header-badge">
+                        <span>🛒</span> Create SARA Reseller Account
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="field-label">Reseller Username / ID</label>
+                            <input type="text" class="input-box" id="newResellerUser" placeholder="e.g. aryan_reseller">
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">Password</label>
+                            <input type="password" class="input-box" id="newResellerPass" placeholder="••••••••">
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">Starting Credits</label>
+                            <input type="number" class="input-box" id="newResellerCredits" value="10" min="1">
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">Reseller Portal Link</label>
+                            <input type="text" readonly class="input-box" id="resellerPortalLinkDisplay" style="color:var(--neon-pink); font-size:12px;">
+                        </div>
+                    </div>
+                    <button class="btn-neon-generate" onclick="createResellerAccount()">+ Create Reseller Account</button>
+                </div>
+
+                <div class="neon-panel" style="margin-bottom:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <div class="panel-header-badge" style="margin-bottom:0;">
+                            <span>👥</span> Active Resellers
+                        </div>
+                        <button class="btn-copy" onclick="fetchResellers()">Refresh</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Reseller Username</th>
+                                    <th>Available Credits</th>
+                                    <th>Total Keys Sold</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resellerTableBody">
+                                <tr><td colspan="5" style="text-align:center; padding: 20px;">Loading resellers...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="neon-panel">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <div class="panel-header-badge" style="margin-bottom:0;">
+                            <span>📊</span> Reseller Audit Log
+                        </div>
                         <button class="btn-copy" onclick="fetchLiveKeys()">Refresh</button>
                     </div>
-                </div>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Created By</th>
-                                <th>Customer</th>
-                                <th>License Key</th>
-                                <th>Devices (Used / Max)</th>
-                                <th>Time Remaining</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="keyTableBody">
-                            <tr><td colspan="7" style="text-align:center; padding: 20px;">Loading active keys...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= TAB 3: PORTAL REQUESTS ================= -->
-        <div id="portalSection" style="display: none;">
-            <div class="card">
-                <div class="card-title">
-                    <span>Portal Users & Live Feedbacks</span>
-                    <button class="btn-copy" onclick="fetchPortalUsers()">Refresh Requests</button>
-                </div>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Approval Status</th>
-                                <th>Assigned Key</th>
-                                <th>Feedback Status</th>
-                                <th>Submitted Feedback & Photo</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="portalTableBody">
-                            <tr><td colspan="6" style="text-align:center; padding: 20px;">Loading users...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= TAB 4: RESELLER HUB ================= -->
-        <div id="resellerSection" style="display: none;">
-            <div class="card">
-                <div class="card-title">Create SARA Reseller Account</div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Reseller Username / ID</label>
-                        <input type="text" id="newResellerUser" placeholder="e.g. aryan_reseller">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Reseller</th>
+                                    <th>Customer</th>
+                                    <th>License Key</th>
+                                    <th>Validity</th>
+                                    <th>Devices</th>
+                                    <th>Cost</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resellerAuditBody">
+                                <tr><td colspan="7" style="text-align:center; padding: 20px;">No reseller keys found.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="newResellerPass" placeholder="••••••••">
-                    </div>
-                    <div class="form-group">
-                        <label>Starting Credits</label>
-                        <input type="number" id="newResellerCredits" value="10" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label>Universal Reseller Portal Link</label>
-                        <input type="text" readonly id="resellerPortalLinkDisplay" style="color:var(--text-main); font-size:12px;">
-                    </div>
-                </div>
-                <button class="btn-main" onclick="createResellerAccount()">+ Create Reseller Account</button>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    <span>Active Resellers List & Credit Management</span>
-                    <button class="btn-copy" onclick="fetchResellers()">Refresh Resellers</button>
-                </div>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Reseller Username</th>
-                                <th>Available Credits</th>
-                                <th>Total Keys Sold</th>
-                                <th>Status</th>
-                                <th>Created Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resellerTableBody">
-                            <tr><td colspan="6" style="text-align:center; padding: 20px;">Loading resellers...</td></tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-title">
-                    <span>Audit Log: Active Keys Generated by Resellers</span>
-                    <button class="btn-copy" onclick="fetchLiveKeys()">Refresh Audit</button>
+            <!-- BOTTOM SARA BANNER -->
+            <div class="bottom-sara-banner">
+                <div class="banner-center-title">
+                    <span>👑</span> S A R A • O F F I C I A L
                 </div>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Reseller Name</th>
-                                <th>Customer Name</th>
-                                <th>License Key</th>
-                                <th>Validity</th>
-                                <th>Devices</th>
-                                <th>Credits Deducted</th>
-                                <th>Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resellerAuditBody">
-                            <tr><td colspan="7" style="text-align:center; padding: 20px;">No active reseller keys found.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div class="banner-center-sub">POWERED BY SARA MODS</div>
+                <div class="banner-motto">Dream Big... Play Better... 💜</div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Recharge Reseller Credits Modal -->
-    <div class="modal" id="rechargeModal">
-        <div class="modal-content">
-            <h3 style="margin-bottom: 8px; color:#fff;">Recharge SARA Credits</h3>
-            <p id="rechargeResellerTitle" style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;"></p>
-            <div class="form-group">
-                <label>Add Credits</label>
-                <input type="number" id="addCreditAmount" value="20" min="1">
-            </div>
-            <div class="modal-footer">
-                <button class="btn-action" style="background:#271342; color:#fff;" onclick="closeRechargeModal()">Cancel</button>
-                <button class="btn-action btn-approve" id="confirmRechargeBtn" onclick="confirmCreditRecharge()">+ Add Credits</button>
-            </div>
+<!-- Recharge Reseller Modal -->
+<div class="modal" id="rechargeModal">
+    <div class="modal-content">
+        <h3 style="margin-bottom: 8px; color:#fff;">Recharge SARA Credits</h3>
+        <p id="rechargeResellerTitle" style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px;"></p>
+        <div class="form-field">
+            <label class="field-label">Add Credits</label>
+            <input type="number" class="input-box" id="addCreditAmount" value="20" min="1">
+        </div>
+        <div class="modal-footer">
+            <button class="btn-action" style="background:#271342; color:#fff;" onclick="closeRechargeModal()">Cancel</button>
+            <button class="btn-action btn-approve" id="confirmRechargeBtn" onclick="confirmCreditRecharge()">+ Add Credits</button>
         </div>
     </div>
+</div>
 
-    <!-- Screenshot Viewer Modal -->
-    <div class="modal" id="imageModal" onclick="closeImageModal()">
-        <div class="modal-content" style="max-width: 680px; text-align: center; background: #130724; padding: 18px;" onclick="event.stopPropagation()">
-            <h3 style="margin-bottom: 14px; color: var(--primary);">Attached Screenshot Proof</h3>
-            <img id="modalImageView" src="" style="width: 100%; max-height: 480px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border);" alt="User Screenshot">
-            <div class="modal-footer" style="justify-content: center; margin-top: 14px;">
-                <button class="btn-action" style="background:#271342; color:#fff; padding: 8px 20px;" onclick="closeImageModal()">Close</button>
-            </div>
+<!-- Screenshot Modal -->
+<div class="modal" id="imageModal" onclick="closeImageModal()">
+    <div class="modal-content" style="max-width: 680px; text-align: center; background: #120621; padding: 18px;" onclick="event.stopPropagation()">
+        <h3 style="margin-bottom: 14px; color: var(--neon-pink);">Attached Screenshot Proof</h3>
+        <img id="modalImageView" src="" style="width: 100%; max-height: 480px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border-purple);" alt="Screenshot">
+        <div class="modal-footer" style="justify-content: center; margin-top: 14px;">
+            <button class="btn-action" style="background:#271342; color:#fff; padding: 8px 20px;" onclick="closeImageModal()">Close</button>
         </div>
     </div>
+</div>
 
-    <script>
-        const FIREBASE_KEYS = "https://skymodsloader-default-rtdb.firebaseio.com/keys";
-        const FIREBASE_USERS = "https://skymodsloader-default-rtdb.firebaseio.com/portal_users";
-        const FIREBASE_RESELLERS = "https://skymodsloader-default-rtdb.firebaseio.com/resellers";
+<script>
+    const FIREBASE_KEYS = "https://skymodsloader-default-rtdb.firebaseio.com/keys";
+    const FIREBASE_USERS = "https://skymodsloader-default-rtdb.firebaseio.com/portal_users";
+    const FIREBASE_RESELLERS = "https://skymodsloader-default-rtdb.firebaseio.com/resellers";
 
-        let liveKeysList = [];
-        let liveUsersList = [];
-        let liveResellersList = [];
-        let selectedResellerForRecharge = null;
+    let liveKeysList = [];
+    let liveUsersList = [];
+    let liveResellersList = [];
+    let selectedResellerForRecharge = null;
 
-        window.onload = function() {
-            const portalUrl = window.location.origin + window.location.pathname.replace("index.html", "") + "reseller.html";
-            document.getElementById("resellerPortalLinkDisplay").value = portalUrl;
+    window.onload = function() {
+        const portalUrl = window.location.origin + window.location.pathname.replace("index.html", "") + "reseller.html";
+        document.getElementById("resellerPortalLinkDisplay").value = portalUrl;
+    };
+
+    function switchTab(tab) {
+        document.getElementById("homeSection").style.display = tab === "home" ? "block" : "none";
+        document.getElementById("manageSection").style.display = tab === "manage" ? "block" : "none";
+        document.getElementById("portalSection").style.display = tab === "portal" ? "block" : "none";
+        document.getElementById("resellerSection").style.display = tab === "reseller" ? "block" : "none";
+
+        // Sync Top Pill Tabs
+        document.getElementById("tabHomeBtn").classList.toggle("active", tab === "home");
+        document.getElementById("tabManageBtn").classList.toggle("active", tab === "manage");
+        document.getElementById("tabPortalBtn").classList.toggle("active", tab === "portal");
+        document.getElementById("tabResellerBtn").classList.toggle("active", tab === "reseller");
+
+        // Sync Left Sidebar Buttons
+        document.getElementById("sideHomeBtn").classList.toggle("active", tab === "home");
+        document.getElementById("sideManageBtn").classList.toggle("active", tab === "manage");
+        document.getElementById("sidePortalBtn").classList.toggle("active", tab === "portal");
+        document.getElementById("sideResellerBtn").classList.toggle("active", tab === "reseller");
+
+        if (tab === "manage") fetchLiveKeys();
+        if (tab === "portal") fetchPortalUsers();
+        if (tab === "reseller") {
+            fetchResellers();
+            fetchLiveKeys();
+        }
+    }
+
+    function randomString(length = 4) {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let res = "";
+        for (let i = 0; i < length; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+        return res;
+    }
+
+    function copyText(t) {
+        navigator.clipboard.writeText(t).then(() => alert("Copied: " + t));
+    }
+
+    function calculateRemaining(expiryISO) {
+        const now = new Date().getTime();
+        const expiry = new Date(expiryISO).getTime();
+        const diff = expiry - now;
+
+        if (diff <= 0) return { text: "Expired", isExpired: true };
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        if (days > 3650) return { text: "Lifetime", isExpired: false };
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        return { text: `${days}d ${hours}h`, isExpired: false };
+    }
+
+    // GENERATE KEY
+    async function generateKey() {
+        const btn = document.getElementById("generateBtn");
+        const customer = document.getElementById("customerName").value.trim() || "Anonymous";
+        const duration = parseInt(document.getElementById("keyDuration").value);
+        const devices = document.getElementById("keyDevices").value;
+        const prefix = document.getElementById("keyPrefix").value.trim() || "SARA";
+
+        btn.disabled = true;
+        const formattedKey = `${prefix}-${randomString(4)}-${randomString(4)}`;
+        let exp = new Date();
+        if (duration === 99999) exp.setFullYear(exp.getFullYear() + 50);
+        else exp.setDate(exp.getDate() + duration);
+
+        const keyData = {
+            customer_name: customer,
+            key: formattedKey,
+            key_type: "mod_menu",
+            durationDays: duration,
+            expires_at: exp.toISOString(),
+            max_devices: devices,
+            bound_devices: "",
+            status: "active",
+            created_by: "ADMIN (OWNER SARA)",
+            credits_deducted: 0,
+            created_at: new Date().toISOString()
         };
 
-        function switchTab(tab) {
-            document.getElementById("homeSection").style.display = tab === "home" ? "block" : "none";
-            document.getElementById("manageSection").style.display = tab === "manage" ? "block" : "none";
-            document.getElementById("portalSection").style.display = tab === "portal" ? "block" : "none";
-            document.getElementById("resellerSection").style.display = tab === "reseller" ? "block" : "none";
-
-            document.getElementById("tabHomeBtn").classList.toggle("active", tab === "home");
-            document.getElementById("tabManageBtn").classList.toggle("active", tab === "manage");
-            document.getElementById("tabPortalBtn").classList.toggle("active", tab === "portal");
-            document.getElementById("tabResellerBtn").classList.toggle("active", tab === "reseller");
-
-            if (tab === "manage") fetchLiveKeys();
-            if (tab === "portal") fetchPortalUsers();
-            if (tab === "reseller") {
-                fetchResellers();
-                fetchLiveKeys();
-            }
-        }
-
-        function randomString(length = 4) {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let res = "";
-            for (let i = 0; i < length; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
-            return res;
-        }
-
-        function copyText(t) {
-            navigator.clipboard.writeText(t).then(() => alert("Copied: " + t));
-        }
-
-        function calculateRemaining(expiryISO) {
-            const now = new Date().getTime();
-            const expiry = new Date(expiryISO).getTime();
-            const diff = expiry - now;
-
-            if (diff <= 0) return { text: "Expired", isExpired: true };
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            if (days > 3650) return { text: "Lifetime", isExpired: false };
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            return { text: `${days}d ${hours}h`, isExpired: false };
-        }
-
-        // ================= TAB 1: MASTER GENERATOR =================
-        async function generateKey() {
-            const btn = document.getElementById("generateBtn");
-            const customer = document.getElementById("customerName").value.trim() || "Anonymous";
-            const duration = parseInt(document.getElementById("keyDuration").value);
-            const devices = document.getElementById("keyDevices").value;
-            const prefix = document.getElementById("keyPrefix").value.trim() || "SARA";
-
-            btn.disabled = true;
-            const formattedKey = `${prefix}-${randomString(4)}-${randomString(4)}`;
-            let exp = new Date();
-            if (duration === 99999) exp.setFullYear(exp.getFullYear() + 50);
-            else exp.setDate(exp.getDate() + duration);
-
-            const keyData = {
-                customer_name: customer,
-                key: formattedKey,
-                key_type: "mod_menu",
-                durationDays: duration,
-                expires_at: exp.toISOString(),
-                max_devices: devices,
-                bound_devices: "",
-                status: "active",
-                created_by: "ADMIN (OWNER SARA)",
-                credits_deducted: 0,
-                created_at: new Date().toISOString()
-            };
-
-            try {
-                await fetch(`${FIREBASE_KEYS}/${formattedKey}.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(keyData)
-                });
-                alert("SARA Master Key Generated: " + formattedKey);
-            } catch (e) {
-                alert("Error: " + e.message);
-            } finally {
-                btn.disabled = false;
-            }
-        }
-
-        // ================= TAB 2: ACTIVE KEYS =================
-        async function fetchLiveKeys() {
-            try {
-                const res = await fetch(`${FIREBASE_KEYS}.json`);
-                const data = await res.json();
-                liveKeysList = data ? Object.values(data).reverse() : [];
-                renderKeys();
-                renderResellerAudit();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        function renderKeys() {
-            const tbody = document.getElementById("keyTableBody");
-            const now = new Date().getTime();
-
-            // Strict Filter: Auto-Remove Expired Keys
-            const activeKeys = liveKeysList.filter(k => {
-                if (!k.expires_at) return true;
-                const expiry = new Date(k.expires_at).getTime();
-                return expiry > now;
+        try {
+            await fetch(`${FIREBASE_KEYS}/${formattedKey}.json`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(keyData)
             });
+            alert("SARA Master Key Generated: " + formattedKey);
+        } catch (e) {
+            alert("Error: " + e.message);
+        } finally {
+            btn.disabled = false;
+        }
+    }
 
-            document.getElementById("activeKeysCountBadge").innerText = activeKeys.length;
+    // FETCH KEYS (EXPIRED AUTO-REMOVED)
+    async function fetchLiveKeys() {
+        try {
+            const res = await fetch(`${FIREBASE_KEYS}.json`);
+            const data = await res.json();
+            liveKeysList = data ? Object.values(data).reverse() : [];
+            renderKeys();
+            renderResellerAudit();
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
-            if (activeKeys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--text-dim);">No active keys available (expired keys are auto-hidden).</td></tr>`;
-                return;
-            }
+    function renderKeys() {
+        const tbody = document.getElementById("keyTableBody");
+        const now = new Date().getTime();
 
-            tbody.innerHTML = "";
-            activeKeys.forEach(k => {
-                const rem = calculateRemaining(k.expires_at);
-                const statusBadge = (k.status === "blocked") 
-                    ? `<span class="status-badge status-blocked">Blocked</span>` 
-                    : `<span class="status-badge status-active">Active</span>`;
+        const activeKeys = liveKeysList.filter(k => {
+            if (!k.expires_at) return true;
+            return new Date(k.expires_at).getTime() > now;
+        });
 
-                let boundCount = 0;
-                if (k.bound_devices) {
-                    if (Array.isArray(k.bound_devices)) {
-                        boundCount = k.bound_devices.filter(Boolean).length;
-                    } else if (typeof k.bound_devices === "object") {
-                        boundCount = Object.keys(k.bound_devices).length;
-                    } else if (typeof k.bound_devices === "string") {
-                        const str = k.bound_devices.trim();
-                        if (str !== "") {
-                            boundCount = str.includes(",") ? str.split(",").filter(Boolean).length : 1;
-                        }
+        document.getElementById("activeKeysCountBadge").innerText = activeKeys.length;
+
+        if (activeKeys.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--text-dim);">No active keys available (expired keys are auto-hidden).</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = "";
+        activeKeys.forEach(k => {
+            const rem = calculateRemaining(k.expires_at);
+            const statusBadge = (k.status === "blocked") 
+                ? `<span class="status-badge status-blocked">Blocked</span>` 
+                : `<span class="status-badge status-active">Active</span>`;
+
+            let boundCount = 0;
+            if (k.bound_devices) {
+                if (Array.isArray(k.bound_devices)) {
+                    boundCount = k.bound_devices.filter(Boolean).length;
+                } else if (typeof k.bound_devices === "object") {
+                    boundCount = Object.keys(k.bound_devices).length;
+                } else if (typeof k.bound_devices === "string") {
+                    const str = k.bound_devices.trim();
+                    if (str !== "") {
+                        boundCount = str.includes(",") ? str.split(",").filter(Boolean).length : 1;
                     }
                 }
-
-                const maxDevStr = k.max_devices || "1";
-                const isLimitReached = (maxDevStr !== "Unlimited" && boundCount >= parseInt(maxDevStr));
-                
-                const deviceBadge = `
-                    <span class="device-badge" style="background: ${boundCount > 0 ? (isLimitReached ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)') : 'rgba(148, 163, 184, 0.1)'}; 
-                                                      color: ${boundCount > 0 ? (isLimitReached ? 'var(--danger)' : 'var(--warning)') : 'var(--text-dim)'}; 
-                                                      border: 1px solid ${boundCount > 0 ? (isLimitReached ? 'var(--danger)' : 'var(--warning)') : 'var(--border)'};">
-                        ${boundCount} / ${maxDevStr} Logged
-                    </span>
-                `;
-
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td style="color:var(--text-dim); font-weight:600;">${k.created_by || 'ADMIN'}</td>
-                    <td style="color:#fff; font-weight:600;">${k.customer_name || 'N/A'}</td>
-                    <td><span class="key-text">${k.key}</span> <button class="btn-copy" onclick="copyText('${k.key}')">Copy</button></td>
-                    <td>${deviceBadge}</td>
-                    <td>${rem.text}</td>
-                    <td>${statusBadge}</td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="btn-action btn-hwid" onclick="resetHWID('${k.key}')" title="Clear Bound Devices">Reset HWID</button>
-                            <button class="btn-action btn-block" onclick="deleteRawKey('${k.key}')">Delete</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        async function purgeExpiredKeysFromDB() {
-            const now = new Date().getTime();
-            const expiredKeys = liveKeysList.filter(k => {
-                if (!k.expires_at) return false;
-                return new Date(k.expires_at).getTime() <= now;
-            });
-
-            if (expiredKeys.length === 0) {
-                alert("No expired keys found in the database!");
-                return;
             }
 
-            if (!confirm(`Found ${expiredKeys.length} expired keys. Do you want to delete them permanently from Firebase database?`)) return;
+            const maxDevStr = k.max_devices || "1";
+            const isLimitReached = (maxDevStr !== "Unlimited" && boundCount >= parseInt(maxDevStr));
+            
+            const deviceBadge = `
+                <span class="device-badge" style="background: ${boundCount > 0 ? (isLimitReached ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)') : 'rgba(148, 163, 184, 0.1)'}; 
+                                                  color: ${boundCount > 0 ? (isLimitReached ? 'var(--danger)' : 'var(--warning)') : 'var(--text-dim)'}; 
+                                                  border: 1px solid ${boundCount > 0 ? (isLimitReached ? 'var(--danger)' : 'var(--warning)') : 'var(--border-purple)'};">
+                    ${boundCount} / ${maxDevStr} Logged
+                </span>
+            `;
 
-            for (const item of expiredKeys) {
-                await fetch(`${FIREBASE_KEYS}/${item.key}.json`, { method: "DELETE" });
-            }
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td style="color:var(--text-dim); font-weight:700;">${k.created_by || 'ADMIN'}</td>
+                <td style="color:#fff; font-weight:700;">${k.customer_name || 'N/A'}</td>
+                <td><span class="key-text">${k.key}</span> <button class="btn-copy" onclick="copyText('${k.key}')">Copy</button></td>
+                <td>${deviceBadge}</td>
+                <td>${rem.text}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-action btn-hwid" onclick="resetHWID('${k.key}')">Reset HWID</button>
+                        <button class="btn-action btn-block" onclick="deleteRawKey('${k.key}')">Delete</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
 
-            alert(`Deleted ${expiredKeys.length} expired keys from database!`);
-            fetchLiveKeys();
+    async function purgeExpiredKeysFromDB() {
+        const now = new Date().getTime();
+        const expiredKeys = liveKeysList.filter(k => k.expires_at && new Date(k.expires_at).getTime() <= now);
+        if (expiredKeys.length === 0) return alert("No expired keys in database!");
+        if (!confirm(`Delete ${expiredKeys.length} expired keys permanently?`)) return;
+        for (const item of expiredKeys) {
+            await fetch(`${FIREBASE_KEYS}/${item.key}.json`, { method: "DELETE" });
         }
-
-        async function resetHWID(key) {
-            if (!confirm(`Reset bound devices for key ${key}? This will allow the user to login on a new device.`)) return;
-            try {
-                await fetch(`${FIREBASE_KEYS}/${key}.json`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ bound_devices: "" })
-                });
-                alert(`HWID Reset successful for ${key}! Device count is now 0.`);
-                fetchLiveKeys();
-            } catch (err) {
-                alert("Error resetting device: " + err.message);
-            }
-        }
-
-        function renderResellerAudit() {
-            const tbody = document.getElementById("resellerAuditBody");
-            const now = new Date().getTime();
-
-            const resellerKeys = liveKeysList.filter(k => {
-                if (!k.created_by || k.created_by.includes("ADMIN")) return false;
-                const expiry = new Date(k.expires_at).getTime();
-                return expiry > now;
-            });
-
-            if (resellerKeys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">No active keys generated by resellers.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = "";
-            resellerKeys.forEach(k => {
-                const dateStr = k.created_at ? new Date(k.created_at).toLocaleString() : "N/A";
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td style="color:var(--primary); font-weight:bold;">${k.created_by}</td>
-                    <td style="color:#fff;">${k.customer_name}</td>
-                    <td><span class="key-text">${k.key}</span></td>
-                    <td>${k.durationDays} Days</td>
-                    <td>${k.max_devices} Device</td>
-                    <td style="color:var(--warning); font-weight:bold;">-${k.credits_deducted || (k.durationDays * (parseInt(k.max_devices)||1))} Credits</td>
-                    <td style="color:var(--text-dim); font-size:12px;">${dateStr}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        async function deleteRawKey(key) {
-            if (!confirm(`Delete key ${key}?`)) return;
-            await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
-            fetchLiveKeys();
-        }
-
-        // ================= TAB 3: PORTAL USERS =================
-        async function fetchPortalUsers() {
-            try {
-                const res = await fetch(`${FIREBASE_USERS}.json`);
-                const data = await res.json();
-                liveUsersList = data ? Object.values(data).reverse() : [];
-                renderPortalUsers();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        function renderPortalUsers() {
-            const tbody = document.getElementById("portalTableBody");
-            tbody.innerHTML = "";
-
-            if (liveUsersList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No user applications found.</td></tr>`;
-                return;
-            }
-
-            liveUsersList.forEach(u => {
-                let statusBadge = `<span class="status-badge status-pending">Pending</span>`;
-                if (u.status === "approved") statusBadge = `<span class="status-badge status-approved">Approved</span>`;
-                if (u.status === "blocked") statusBadge = `<span class="status-badge status-blocked">Blocked</span>`;
-
-                let screenshotBtn = "";
-                if (u.feedback_image) {
-                    screenshotBtn = `<br><button class="btn-action btn-extend" style="margin-top:6px;" onclick="openImageModal('${u.feedback_image}')">View Screenshot</button>`;
-                }
-
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td style="color:#fff; font-weight:bold;">${u.username}</td>
-                    <td>${statusBadge}</td>
-                    <td>${u.key ? `<span class="key-text">${u.key}</span>` : '<span style="color:var(--text-dim);">None</span>'}</td>
-                    <td>${u.feedback_status ? '<span class="status-badge status-active">Submitted</span>' : '<span class="status-badge status-pending">No Feedback</span>'}</td>
-                    <td style="max-width:300px; white-space:pre-wrap; font-size:12px;">${u.feedback_text || 'No feedback yet'}${screenshotBtn}</td>
-                    <td>
-                        <div class="action-btns">
-                            ${u.status !== 'blocked' ? `<button class="btn-action btn-block" onclick="blockPortalUser('${u.username}', '${u.key}')">Block</button>` : `<button class="btn-action btn-approve" onclick="unblockPortalUser('${u.username}')">Unblock</button>`}
-                            <button class="btn-action btn-block" onclick="deletePortalUser('${u.username}', '${u.key}')">Del</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openImageModal(src) {
-            document.getElementById("modalImageView").src = src;
-            document.getElementById("imageModal").style.display = "flex";
-        }
-        function closeImageModal() {
-            document.getElementById("imageModal").style.display = "none";
-        }
-
-        async function blockPortalUser(username, key) {
-            if (!confirm(`Block user ${username}?`)) return;
-            await fetch(`${FIREBASE_USERS}/${username}.json`, { method: "PATCH", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ status: "blocked" }) });
-            if (key) await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
-            fetchPortalUsers();
-        }
-
-        async function unblockPortalUser(username) {
-            await fetch(`${FIREBASE_USERS}/${username}.json`, { method: "PATCH", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ status: "approved" }) });
-            fetchPortalUsers();
-        }
-
-        async function deletePortalUser(username, key) {
-            if (!confirm(`Delete user ${username}?`)) return;
-            await fetch(`${FIREBASE_USERS}/${username}.json`, { method: "DELETE" });
-            if (key) await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
-            fetchPortalUsers();
-        }
-
-        // ================= TAB 4: RESELLER SYSTEM =================
-        async function createResellerAccount() {
-            const username = document.getElementById("newResellerUser").value.trim().toLowerCase();
-            const password = document.getElementById("newResellerPass").value.trim();
-            const credits = parseInt(document.getElementById("newResellerCredits").value) || 10;
-
-            if (!username || !password) {
-                alert("Please enter username and password!");
-                return;
-            }
-
-            try {
-                const checkRes = await fetch(`${FIREBASE_RESELLERS}/${username}.json`);
-                const existing = await checkRes.json();
-                if (existing) {
-                    alert("This reseller username already exists!");
-                    return;
-                }
-
-                const resellerData = {
-                    username: username,
-                    password: password,
-                    credits: credits,
-                    total_keys_generated: 0,
-                    status: "active",
-                    created_at: new Date().toISOString()
-                };
-
-                await fetch(`${FIREBASE_RESELLERS}/${username}.json`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(resellerData)
-                });
-
-                alert(`Reseller '${username}' created with ${credits} credits!`);
-                document.getElementById("newResellerUser").value = "";
-                document.getElementById("newResellerPass").value = "";
-                fetchResellers();
-            } catch (err) {
-                alert("Error: " + err.message);
-            }
-        }
-
-        async function fetchResellers() {
-            try {
-                const res = await fetch(`${FIREBASE_RESELLERS}.json`);
-                const data = await res.json();
-                liveResellersList = data ? Object.values(data).reverse() : [];
-                renderResellers();
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        function renderResellers() {
-            const tbody = document.getElementById("resellerTableBody");
-            if (liveResellersList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No reseller accounts created yet.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = "";
-            liveResellersList.forEach(r => {
-                const tr = document.createElement("tr");
-                const statusBadge = r.status === "active" 
-                    ? `<span class="status-badge status-active">Active</span>`
-                    : `<span class="status-badge status-blocked">Blocked</span>`;
-
-                tr.innerHTML = `
-                    <td style="color:#fff; font-weight:bold;">${r.username}</td>
-                    <td style="color:var(--primary); font-weight:bold; font-size:15px;">${r.credits} Credits</td>
-                    <td>${r.total_keys_generated || 0}</td>
-                    <td>${statusBadge}</td>
-                    <td style="color:var(--text-dim); font-size:12px;">${new Date(r.created_at).toLocaleDateString()}</td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="btn-action btn-recharge" onclick="openRechargeModal('${r.username}')">+ Add Credits</button>
-                            ${r.status === 'active' 
-                                ? `<button class="btn-action btn-block" onclick="toggleResellerStatus('${r.username}', 'blocked')">Block</button>` 
-                                : `<button class="btn-action btn-approve" onclick="toggleResellerStatus('${r.username}', 'active')">Unblock</button>`}
-                            <button class="btn-action btn-block" onclick="deleteReseller('${r.username}')">Delete</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openRechargeModal(username) {
-            selectedResellerForRecharge = liveResellersList.find(r => r.username === username);
-            if (!selectedResellerForRecharge) return;
-            document.getElementById("rechargeResellerTitle").innerText = `Reseller: ${username} (Current: ${selectedResellerForRecharge.credits} Credits)`;
-            document.getElementById("rechargeModal").style.display = "flex";
-        }
-
-        function closeRechargeModal() {
-            document.getElementById("rechargeModal").style.display = "none";
-            selectedResellerForRecharge = null;
-        }
-
-        async function confirmCreditRecharge() {
-            const add = parseInt(document.getElementById("addCreditAmount").value);
-            if (isNaN(add) || add <= 0 || !selectedResellerForRecharge) return;
-
-            const btn = document.getElementById("confirmRechargeBtn");
-            btn.disabled = true;
-
-            const newTotal = (selectedResellerForRecharge.credits || 0) + add;
-
-            try {
-                await fetch(`${FIREBASE_RESELLERS}/${selectedResellerForRecharge.username}.json`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ credits: newTotal })
-                });
-
-                alert(`Added ${add} credits! New balance for ${selectedResellerForRecharge.username}: ${newTotal} Credits.`);
-                closeRechargeModal();
-                fetchResellers();
-            } catch (err) {
-                alert("Error adding credits: " + err.message);
-            } finally {
-                btn.disabled = false;
-            }
-        }
-
-        async function toggleResellerStatus(username, status) {
-            if (!confirm(`Set reseller ${username} to ${status}?`)) return;
-            await fetch(`${FIREBASE_RESELLERS}/${username}.json`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: status })
-            });
-            fetchResellers();
-        }
-
-        async function deleteReseller(username) {
-            if (!confirm(`Permanently delete reseller ${username}?`)) return;
-            await fetch(`${FIREBASE_RESELLERS}/${username}.json`, { method: "DELETE" });
-            fetchResellers();
-        }
-
+        alert("Expired keys purged!");
         fetchLiveKeys();
-    </script>
+    }
+
+    async function resetHWID(key) {
+        if (!confirm(`Reset HWID for ${key}?`)) return;
+        await fetch(`${FIREBASE_KEYS}/${key}.json`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ bound_devices: "" })
+        });
+        alert(`HWID Reset done for ${key}!`);
+        fetchLiveKeys();
+    }
+
+    function renderResellerAudit() {
+        const tbody = document.getElementById("resellerAuditBody");
+        const now = new Date().getTime();
+        const resellerKeys = liveKeysList.filter(k => k.created_by && !k.created_by.includes("ADMIN") && new Date(k.expires_at).getTime() > now);
+
+        if (resellerKeys.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">No active reseller keys.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = "";
+        resellerKeys.forEach(k => {
+            const dateStr = k.created_at ? new Date(k.created_at).toLocaleString() : "N/A";
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td style="color:var(--neon-pink); font-weight:bold;">${k.created_by}</td>
+                <td style="color:#fff;">${k.customer_name}</td>
+                <td><span class="key-text">${k.key}</span></td>
+                <td>${k.durationDays} Days</td>
+                <td>${k.max_devices} Dev</td>
+                <td style="color:var(--warning); font-weight:bold;">-${k.credits_deducted || 1} Cr</td>
+                <td style="color:var(--text-dim); font-size:12px;">${dateStr}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    async function deleteRawKey(key) {
+        if (!confirm(`Delete key ${key}?`)) return;
+        await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
+        fetchLiveKeys();
+    }
+
+    // PORTAL USERS
+    async function fetchPortalUsers() {
+        try {
+            const res = await fetch(`${FIREBASE_USERS}.json`);
+            const data = await res.json();
+            liveUsersList = data ? Object.values(data).reverse() : [];
+            renderPortalUsers();
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function renderPortalUsers() {
+        const tbody = document.getElementById("portalTableBody");
+        tbody.innerHTML = "";
+        if (liveUsersList.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No requests found.</td></tr>`;
+            return;
+        }
+
+        liveUsersList.forEach(u => {
+            let statusBadge = `<span class="status-badge status-pending">Pending</span>`;
+            if (u.status === "approved") statusBadge = `<span class="status-badge status-approved">Approved</span>`;
+            if (u.status === "blocked") statusBadge = `<span class="status-badge status-blocked">Blocked</span>`;
+
+            let screenshotBtn = u.feedback_image ? `<br><button class="btn-action btn-hwid" style="margin-top:6px;" onclick="openImageModal('${u.feedback_image}')">View Photo</button>` : "";
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td style="color:#fff; font-weight:bold;">${u.username}</td>
+                <td>${statusBadge}</td>
+                <td>${u.key ? `<span class="key-text">${u.key}</span>` : 'None'}</td>
+                <td>${u.feedback_status ? '<span class="status-badge status-active">Submitted</span>' : '<span class="status-badge status-pending">No Feedback</span>'}</td>
+                <td style="max-width:300px; white-space:pre-wrap; font-size:12px;">${u.feedback_text || 'No feedback'}${screenshotBtn}</td>
+                <td>
+                    <div class="action-btns">
+                        ${u.status !== 'blocked' ? `<button class="btn-action btn-block" onclick="blockPortalUser('${u.username}', '${u.key}')">Block</button>` : `<button class="btn-action btn-approve" onclick="unblockPortalUser('${u.username}')">Unblock</button>`}
+                        <button class="btn-action btn-block" onclick="deletePortalUser('${u.username}', '${u.key}')">Del</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function openImageModal(src) {
+        document.getElementById("modalImageView").src = src;
+        document.getElementById("imageModal").style.display = "flex";
+    }
+    function closeImageModal() {
+        document.getElementById("imageModal").style.display = "none";
+    }
+
+    async function blockPortalUser(username, key) {
+        if (!confirm(`Block ${username}?`)) return;
+        await fetch(`${FIREBASE_USERS}/${username}.json`, { method: "PATCH", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ status: "blocked" }) });
+        if (key) await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
+        fetchPortalUsers();
+    }
+
+    async function unblockPortalUser(username) {
+        await fetch(`${FIREBASE_USERS}/${username}.json`, { method: "PATCH", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ status: "approved" }) });
+        fetchPortalUsers();
+    }
+
+    async function deletePortalUser(username, key) {
+        if (!confirm(`Delete ${username}?`)) return;
+        await fetch(`${FIREBASE_USERS}/${username}.json`, { method: "DELETE" });
+        if (key) await fetch(`${FIREBASE_KEYS}/${key}.json`, { method: "DELETE" });
+        fetchPortalUsers();
+    }
+
+    // RESELLERS
+    async function createResellerAccount() {
+        const username = document.getElementById("newResellerUser").value.trim().toLowerCase();
+        const password = document.getElementById("newResellerPass").value.trim();
+        const credits = parseInt(document.getElementById("newResellerCredits").value) || 10;
+        if (!username || !password) return alert("Enter username & password!");
+
+        try {
+            await fetch(`${FIREBASE_RESELLERS}/${username}.json`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password, credits, total_keys_generated: 0, status: "active", created_at: new Date().toISOString() })
+            });
+            alert(`SARA Reseller '${username}' created with ${credits} credits!`);
+            document.getElementById("newResellerUser").value = "";
+            document.getElementById("newResellerPass").value = "";
+            fetchResellers();
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+    async function fetchResellers() {
+        try {
+            const res = await fetch(`${FIREBASE_RESELLERS}.json`);
+            const data = await res.json();
+            liveResellersList = data ? Object.values(data).reverse() : [];
+            renderResellers();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function renderResellers() {
+        const tbody = document.getElementById("resellerTableBody");
+        if (liveResellersList.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px;">No resellers created yet.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = "";
+        liveResellersList.forEach(r => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td style="color:#fff; font-weight:bold;">${r.username}</td>
+                <td style="color:var(--neon-pink); font-weight:bold; font-size:15px;">${r.credits} Credits</td>
+                <td>${r.total_keys_generated || 0}</td>
+                <td>${r.status === 'active' ? '<span class="status-badge status-active">Active</span>' : '<span class="status-badge status-blocked">Blocked</span>'}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-action btn-recharge" onclick="openRechargeModal('${r.username}')">+ Credits</button>
+                        ${r.status === 'active' ? `<button class="btn-action btn-block" onclick="toggleResellerStatus('${r.username}', 'blocked')">Block</button>` : `<button class="btn-action btn-approve" onclick="toggleResellerStatus('${r.username}', 'active')">Unblock</button>`}
+                        <button class="btn-action btn-block" onclick="deleteReseller('${r.username}')">Delete</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function openRechargeModal(username) {
+        selectedResellerForRecharge = liveResellersList.find(r => r.username === username);
+        if (!selectedResellerForRecharge) return;
+        document.getElementById("rechargeResellerTitle").innerText = `Reseller: ${username} (Current: ${selectedResellerForRecharge.credits} Credits)`;
+        document.getElementById("rechargeModal").style.display = "flex";
+    }
+
+    function closeRechargeModal() {
+        document.getElementById("rechargeModal").style.display = "none";
+        selectedResellerForRecharge = null;
+    }
+
+    async function confirmCreditRecharge() {
+        const add = parseInt(document.getElementById("addCreditAmount").value);
+        if (isNaN(add) || add <= 0 || !selectedResellerForRecharge) return;
+        const newTotal = (selectedResellerForRecharge.credits || 0) + add;
+        await fetch(`${FIREBASE_RESELLERS}/${selectedResellerForRecharge.username}.json`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ credits: newTotal })
+        });
+        alert(`Recharge successful!`);
+        closeRechargeModal();
+        fetchResellers();
+    }
+
+    async function toggleResellerStatus(username, status) {
+        if (!confirm(`Set reseller to ${status}?`)) return;
+        await fetch(`${FIREBASE_RESELLERS}/${username}.json`, { method: "PATCH", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ status }) });
+        fetchResellers();
+    }
+
+    async function deleteReseller(username) {
+        if (!confirm(`Delete reseller ${username}?`)) return;
+        await fetch(`${FIREBASE_RESELLERS}/${username}.json`, { method: "DELETE" });
+        fetchResellers();
+    }
+
+    fetchLiveKeys();
+</script>
 </body>
 </html>
