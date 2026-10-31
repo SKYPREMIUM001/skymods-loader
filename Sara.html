@@ -6,21 +6,18 @@
     <title>SARA OFFICIAL - Admin Panel</title>
     <style>
         :root {
-            --bg-body: #05010b;
-            --bg-window: #090214;
-            --bg-card: rgba(18, 6, 33, 0.85);
-            --bg-card-inner: #150826;
-            --bg-input: #1a0a33;
-            --border-purple: #3b1464;
+            --bg-body: #040108;
+            --bg-window: #080212;
+            --bg-card: rgba(18, 6, 33, 0.9);
+            --bg-input: #180931;
+            --border-purple: #3e1469;
             --neon-pink: #e024c3;
             --neon-purple: #a855f7;
             --neon-violet: #c026d3;
-            --neon-glow: 0 0 15px rgba(224, 36, 195, 0.45);
-            --neon-border-glow: 0 0 12px rgba(168, 85, 247, 0.6);
+            --neon-glow: 0 0 20px rgba(224, 36, 195, 0.5);
             --gold: #fbbf24;
             --text-white: #ffffff;
             --text-dim: #c4b5fd;
-            --text-muted: #8b5cf6;
             --danger: #ef4444;
             --success: #10b981;
             --warning: #f59e0b;
@@ -36,35 +33,34 @@
         body {
             background-color: var(--bg-body);
             color: var(--text-white);
-            padding: 14px;
+            padding: 12px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             background-image: 
-                radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.18), transparent 35%),
-                radial-gradient(circle at 90% 90%, rgba(224, 36, 195, 0.15), transparent 40%);
+                radial-gradient(circle at 10% 15%, rgba(168, 85, 247, 0.22), transparent 40%),
+                radial-gradient(circle at 90% 85%, rgba(224, 36, 195, 0.18), transparent 45%);
         }
 
-        /* OUTER DESKTOP APP WINDOW */
         .window-wrapper {
             width: 100%;
             max-width: 1240px;
             background: var(--bg-window);
             border: 2px solid #581c87;
-            border-radius: 20px;
-            box-shadow: 0 0 35px rgba(168, 85, 247, 0.35), inset 0 0 20px rgba(168, 85, 247, 0.12);
+            border-radius: 22px;
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.4), inset 0 0 25px rgba(168, 85, 247, 0.15);
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* TITLEBAR & WINDOW CONTROLS */
+        /* TOP WINDOW CONTROLS */
         .window-titlebar {
             display: flex;
             justify-content: flex-end;
             align-items: center;
             gap: 8px;
-            padding: 10px 18px 0;
+            padding: 12px 20px 0;
         }
 
         .win-btn {
@@ -79,34 +75,51 @@
             justify-content: center;
             font-size: 11px;
             cursor: pointer;
-            box-shadow: 0 0 6px rgba(168, 85, 247, 0.3);
         }
 
-        /* HEADER BANNER */
+        /* HEADER BANNER WITH CHARACTER ART */
         .header-banner {
-            padding: 10px 24px 20px;
+            padding: 12px 24px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 16px;
             border-bottom: 2px solid #3b1464;
-            background: linear-gradient(180deg, rgba(88, 28, 135, 0.18), transparent);
+            background: linear-gradient(180deg, rgba(88, 28, 135, 0.22), transparent);
+            position: relative;
         }
 
-        .header-title-box {
+        .header-left-group {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 18px;
         }
 
-        .title-crown {
-            font-size: 32px;
-            filter: drop-shadow(0 0 10px var(--gold));
+        /* ANIME MASCOT FRAME */
+        .mascot-avatar-frame {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink);
+            overflow: hidden;
+            background: #1e0b36;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .mascot-avatar-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .brand-title {
-            font-size: 34px;
+            font-size: 36px;
             font-weight: 900;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -114,8 +127,8 @@
             background: linear-gradient(180deg, #ffffff 10%, #f5d0fe 45%, #c026d3 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 25px rgba(224, 36, 195, 0.6);
-            line-height: 1;
+            text-shadow: 0 0 25px rgba(224, 36, 195, 0.7);
+            line-height: 1.1;
         }
 
         .brand-subtitle {
@@ -124,9 +137,6 @@
             font-style: italic;
             letter-spacing: 0.5px;
             margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .admin-badge-card {
@@ -155,7 +165,6 @@
             font-size: 12px;
             font-weight: 700;
             color: #ffffff;
-            letter-spacing: 0.5px;
         }
 
         .admin-badge-info span {
@@ -163,11 +172,11 @@
             color: #d8b4fe;
         }
 
-        /* MAIN APP LAYOUT (SIDEBAR + CONTENT) */
+        /* MAIN APP LAYOUT */
         .app-body {
             display: grid;
             grid-template-columns: 240px 1fr;
-            min-height: 600px;
+            min-height: 620px;
         }
 
         @media (max-width: 900px) {
@@ -176,11 +185,11 @@
             }
         }
 
-        /* LEFT SIDEBAR */
+        /* SIDEBAR NAVIGATION */
         .app-sidebar {
             background: rgba(12, 4, 24, 0.95);
             border-right: 2px solid #3b1464;
-            padding: 20px 14px;
+            padding: 24px 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -188,7 +197,7 @@
         }
 
         .sidebar-brand {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             padding-left: 6px;
         }
 
@@ -219,7 +228,7 @@
 
         .side-nav-btn {
             background: transparent;
-            border: 1px solid transparent;
+            border: 1.5px solid transparent;
             color: var(--text-dim);
             padding: 12px 14px;
             border-radius: 12px;
@@ -230,21 +239,20 @@
             gap: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
-            text-align: left;
             width: 100%;
         }
 
         .side-nav-btn:hover {
-            background: rgba(168, 85, 247, 0.1);
+            background: rgba(168, 85, 247, 0.12);
             color: #ffffff;
             border-color: #581c87;
         }
 
         .side-nav-btn.active {
-            background: linear-gradient(90deg, rgba(224, 36, 195, 0.25), rgba(168, 85, 247, 0.15));
-            border: 1.5px solid var(--neon-pink);
+            background: linear-gradient(90deg, rgba(224, 36, 195, 0.28), rgba(168, 85, 247, 0.15));
+            border-color: var(--neon-pink);
             color: #ffffff;
-            box-shadow: 0 0 15px rgba(224, 36, 195, 0.35);
+            box-shadow: 0 0 15px rgba(224, 36, 195, 0.4);
         }
 
         .side-nav-btn .icon {
@@ -276,66 +284,21 @@
             margin-top: 4px;
         }
 
-        /* MAIN CONTENT AREA */
+        /* CONTENT AREA */
         .app-content {
             padding: 24px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 22px;
+            gap: 24px;
         }
 
-        /* TOP HORIZONTAL PILL TABS */
-        .top-pill-tabs {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
-
-        .pill-tab {
-            background: #17082e;
-            border: 1.5px solid #4c1d95;
-            color: var(--text-dim);
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .pill-tab:hover {
-            border-color: var(--neon-purple);
-            color: #ffffff;
-        }
-
-        .pill-tab.active {
-            background: linear-gradient(135deg, rgba(224, 36, 195, 0.3), rgba(168, 85, 247, 0.2));
-            border-color: var(--neon-pink);
-            color: #ffffff;
-            box-shadow: 0 0 15px rgba(224, 36, 195, 0.4);
-        }
-
-        .pill-counter {
-            background: var(--neon-violet);
-            color: #fff;
-            padding: 2px 7px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        /* NEON GLASS CONTAINER CARD */
+        /* PANELS */
         .neon-panel {
             background: var(--bg-card);
             border: 2px solid #581c87;
             border-radius: 18px;
-            box-shadow: 0 0 25px rgba(88, 28, 135, 0.35);
+            box-shadow: 0 0 30px rgba(88, 28, 135, 0.4);
             padding: 24px;
             position: relative;
         }
@@ -350,13 +313,11 @@
             gap: 10px;
             font-size: 16px;
             font-weight: 800;
-            letter-spacing: 0.5px;
             color: #ffffff;
-            box-shadow: 0 0 18px rgba(224, 36, 195, 0.4);
+            box-shadow: 0 0 18px rgba(224, 36, 195, 0.45);
             margin-bottom: 24px;
         }
 
-        /* FORM GRID & INPUTS */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -405,7 +366,6 @@
             background: #200c3e;
         }
 
-        /* VIBRANT GLOW GENERATE BUTTON */
         .btn-neon-generate {
             background: linear-gradient(90deg, #c026d3 0%, #e024c3 50%, #9333ea 100%);
             border: 1.5px solid #f472b6;
@@ -431,19 +391,30 @@
             transform: translateY(-1px);
         }
 
-        /* BOTTOM BANNER CARD */
+        /* BOTTOM SARA BANNER WITH BUTTERFLY ART */
         .bottom-sara-banner {
             background: linear-gradient(180deg, #130724 0%, #090214 100%);
             border: 1.5px solid #4c1d95;
             border-radius: 16px;
-            padding: 20px 24px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             gap: 6px;
             position: relative;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.25);
+            overflow: hidden;
+        }
+
+        .butterfly-svg {
+            position: absolute;
+            left: 20px;
+            bottom: 10px;
+            width: 70px;
+            height: 70px;
+            filter: drop-shadow(0 0 8px #e024c3);
+            opacity: 0.85;
         }
 
         .banner-center-title {
@@ -465,13 +436,14 @@
         }
 
         .banner-motto {
-            font-size: 13px;
+            font-size: 14px;
             font-style: italic;
-            color: #e9d5ff;
+            color: #f5d0fe;
             margin-top: 6px;
+            text-shadow: 0 0 10px rgba(224, 36, 195, 0.5);
         }
 
-        /* TABLE & CONTROLS */
+        /* TABLES */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -641,17 +613,20 @@
 <body>
 
 <div class="window-wrapper">
-    <!-- TITLEBAR -->
+    <!-- TOP CONTROLS -->
     <div class="window-titlebar">
         <button class="win-btn" title="Minimize">−</button>
         <button class="win-btn" title="Maximize">□</button>
         <button class="win-btn" title="Close" style="color:#ef4444;">✕</button>
     </div>
 
-    <!-- TOP BANNER -->
+    <!-- HEADER BANNER WITH MASCOT IMAGE -->
     <div class="header-banner">
-        <div class="header-title-box">
-            <span class="title-crown">👑</span>
+        <div class="header-left-group">
+            <div class="mascot-avatar-frame" title="SARA MODS Official Mascot">
+                <!-- If sara.png exists in your repo it will load, otherwise cute glowing crown mascot -->
+                <img src="sara.png" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/bottts/svg?seed=SaraCute&backgroundColor=1e0b36';" alt="Sara Mascot">
+            </div>
             <div>
                 <h1 class="brand-title">SARA OFFICIAL</h1>
                 <p class="brand-subtitle">Play Smarter With Sara Official 💜</p>
@@ -668,7 +643,7 @@
 
     <!-- APP BODY -->
     <div class="app-body">
-        <!-- LEFT SIDEBAR -->
+        <!-- ONLY SIDEBAR CONTROLS NOW -->
         <div class="app-sidebar">
             <div>
                 <div class="sidebar-brand">
@@ -681,7 +656,7 @@
                         <span class="icon">👑</span> Master Generator
                     </button>
                     <button class="side-nav-btn" id="sideManageBtn" onclick="switchTab('manage')">
-                        <span class="icon">🔑</span> Active Keys
+                        <span class="icon">🔑</span> Active Keys (<span id="sideActiveKeysBadge">0</span>)
                     </button>
                     <button class="side-nav-btn" id="sidePortalBtn" onclick="switchTab('portal')">
                         <span class="icon">💬</span> Requests & Feedback
@@ -700,23 +675,8 @@
 
         <!-- RIGHT CONTENT -->
         <div class="app-content">
-            <!-- TOP PILL TABS -->
-            <div class="top-pill-tabs">
-                <button class="pill-tab active" id="tabHomeBtn" onclick="switchTab('home')">
-                    👑 Master Generator
-                </button>
-                <button class="pill-tab" id="tabManageBtn" onclick="switchTab('manage')">
-                    Active Keys <span class="pill-counter" id="activeKeysCountBadge">0</span>
-                </button>
-                <button class="pill-tab" id="tabPortalBtn" onclick="switchTab('portal')">
-                    Requests & Feedback <span class="pill-counter" id="pendingCountBadge" style="background:var(--danger); display:none;">0</span>
-                </button>
-                <button class="pill-tab" id="tabResellerBtn" onclick="switchTab('reseller')">
-                    Reseller Hub
-                </button>
-            </div>
 
-            <!-- ================= TAB 1: MASTER GENERATOR ================= -->
+            <!-- TAB 1: MASTER GENERATOR -->
             <div id="homeSection">
                 <div class="neon-panel">
                     <div class="panel-header-badge">
@@ -766,7 +726,7 @@
                 </div>
             </div>
 
-            <!-- ================= TAB 2: ACTIVE KEYS ================= -->
+            <!-- TAB 2: ACTIVE KEYS -->
             <div id="manageSection" style="display: none;">
                 <div class="neon-panel">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
@@ -799,7 +759,7 @@
                 </div>
             </div>
 
-            <!-- ================= TAB 3: PORTAL REQUESTS ================= -->
+            <!-- TAB 3: PORTAL REQUESTS -->
             <div id="portalSection" style="display: none;">
                 <div class="neon-panel">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
@@ -828,7 +788,7 @@
                 </div>
             </div>
 
-            <!-- ================= TAB 4: RESELLER HUB ================= -->
+            <!-- TAB 4: RESELLER HUB -->
             <div id="resellerSection" style="display: none;">
                 <div class="neon-panel" style="margin-bottom:20px;">
                     <div class="panel-header-badge">
@@ -908,8 +868,15 @@
                 </div>
             </div>
 
-            <!-- BOTTOM SARA BANNER -->
+            <!-- BOTTOM SARA BANNER WITH NEON BUTTERFLY ART -->
             <div class="bottom-sara-banner">
+                <!-- SVG Glowing Butterfly Art -->
+                <svg class="butterfly-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 48C45 35 25 25 15 35C5 45 15 70 50 85C85 70 95 45 85 35C75 25 55 35 50 48Z" stroke="#e024c3" stroke-width="2" fill="rgba(224, 36, 195, 0.15)"/>
+                    <path d="M50 48C46 38 32 30 25 38C18 46 25 65 50 78C75 65 82 46 75 38C68 30 54 38 50 48Z" stroke="#a855f7" stroke-width="1.5"/>
+                    <circle cx="50" cy="50" r="3" fill="#ffffff"/>
+                </svg>
+
                 <div class="banner-center-title">
                     <span>👑</span> S A R A • O F F I C I A L
                 </div>
@@ -967,12 +934,6 @@
         document.getElementById("manageSection").style.display = tab === "manage" ? "block" : "none";
         document.getElementById("portalSection").style.display = tab === "portal" ? "block" : "none";
         document.getElementById("resellerSection").style.display = tab === "reseller" ? "block" : "none";
-
-        // Sync Top Pill Tabs
-        document.getElementById("tabHomeBtn").classList.toggle("active", tab === "home");
-        document.getElementById("tabManageBtn").classList.toggle("active", tab === "manage");
-        document.getElementById("tabPortalBtn").classList.toggle("active", tab === "portal");
-        document.getElementById("tabResellerBtn").classList.toggle("active", tab === "reseller");
 
         // Sync Left Sidebar Buttons
         document.getElementById("sideHomeBtn").classList.toggle("active", tab === "home");
@@ -1053,7 +1014,7 @@
         }
     }
 
-    // FETCH KEYS (EXPIRED AUTO-REMOVED)
+    // FETCH KEYS
     async function fetchLiveKeys() {
         try {
             const res = await fetch(`${FIREBASE_KEYS}.json`);
@@ -1075,7 +1036,7 @@
             return new Date(k.expires_at).getTime() > now;
         });
 
-        document.getElementById("activeKeysCountBadge").innerText = activeKeys.length;
+        document.getElementById("sideActiveKeysBadge").innerText = activeKeys.length;
 
         if (activeKeys.length === 0) {
             tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--text-dim);">No active keys available (expired keys are auto-hidden).</td></tr>`;
