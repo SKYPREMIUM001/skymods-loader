@@ -37,11 +37,60 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
             background-image: 
                 radial-gradient(circle at 10% 15%, rgba(168, 85, 247, 0.22), transparent 40%),
                 radial-gradient(circle at 90% 85%, rgba(224, 36, 195, 0.18), transparent 45%);
         }
 
+        /* LOGIN SCREEN STYLES */
+        #adminAuthScreen {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-window);
+            border: 2px solid var(--neon-pink);
+            border-radius: 20px;
+            padding: 32px 26px;
+            box-shadow: 0 0 35px rgba(224, 36, 195, 0.5), inset 0 0 20px rgba(168, 85, 247, 0.2);
+            text-align: center;
+        }
+
+        .auth-logo {
+            font-size: 32px;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: 2px;
+            background: linear-gradient(180deg, #ffffff 10%, #f5d0fe 45%, #c026d3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px rgba(224, 36, 195, 0.7);
+            margin-bottom: 4px;
+        }
+
+        .auth-sub {
+            font-size: 12px;
+            color: var(--gold);
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 24px;
+        }
+
+        .auth-form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .auth-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #e9d5ff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        /* MAIN DASHBOARD WRAPPER */
         .window-wrapper {
             width: 100%;
             max-width: 1240px;
@@ -50,7 +99,7 @@
             border-radius: 22px;
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.4), inset 0 0 25px rgba(168, 85, 247, 0.15);
             overflow: hidden;
-            display: flex;
+            display: none;
             flex-direction: column;
         }
 
@@ -77,7 +126,7 @@
             cursor: pointer;
         }
 
-        /* HEADER BANNER WITH REAL ANIME ART */
+        /* HEADER BANNER */
         .header-banner {
             padding: 10px 24px 18px;
             display: flex;
@@ -96,7 +145,6 @@
             gap: 20px;
         }
 
-        /* EXACT MASCOT ART CONTAINER */
         .mascot-avatar-frame {
             width: 86px;
             height: 86px;
@@ -171,6 +219,24 @@
         .admin-badge-info span {
             font-size: 11px;
             color: #d8b4fe;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--danger);
+            color: #fca5a5;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: #fff;
         }
 
         /* MAIN APP LAYOUT */
@@ -359,6 +425,7 @@
             padding: 13px 16px;
             outline: none;
             transition: all 0.25s ease;
+            width: 100%;
         }
 
         .input-box:focus {
@@ -392,7 +459,7 @@
             transform: translateY(-1px);
         }
 
-        /* BOTTOM BANNER WITH NEON ART */
+        /* BOTTOM BANNER */
         .bottom-sara-banner {
             background: linear-gradient(180deg, #130724 0%, #090214 100%);
             border: 1.5px solid #4c1d95;
@@ -603,19 +670,39 @@
 </head>
 <body>
 
-<div class="window-wrapper">
+<!-- 1. ADMIN AUTHENTICATION SCREEN -->
+<div id="adminAuthScreen">
+    <div class="auth-logo">SARA OFFICIAL</div>
+    <div class="auth-sub">👑 MASTER ADMIN LOGIN</div>
+    
+    <form onsubmit="handleAdminLogin(event)">
+        <div class="auth-form-group">
+            <label class="auth-label">👤 Username</label>
+            <input type="text" class="input-box" id="authUsernameInput" placeholder="Enter Admin Username" required autofocus>
+        </div>
+        <div class="auth-form-group">
+            <label class="auth-label">🔒 Password</label>
+            <input type="password" class="input-box" id="authPasswordInput" placeholder="••••••••••" required>
+        </div>
+        <button type="submit" class="btn-neon-generate" id="loginSubmitBtn" style="margin-top:10px;">
+            <span>⚡</span> SIGN IN TO ADMIN PANEL
+        </button>
+    </form>
+</div>
+
+<!-- 2. MAIN ADMIN DASHBOARD -->
+<div class="window-wrapper" id="adminDashboardWrapper">
     <!-- TOP CONTROLS -->
     <div class="window-titlebar">
         <button class="win-btn" title="Minimize">−</button>
         <button class="win-btn" title="Maximize">□</button>
-        <button class="win-btn" title="Close" style="color:#ef4444;">✕</button>
+        <button class="win-btn" title="Close" style="color:#ef4444;" onclick="logoutAdmin()">✕</button>
     </div>
 
     <!-- HEADER BANNER -->
     <div class="header-banner">
         <div class="header-left-group">
             <div class="mascot-avatar-frame" title="SARA MODS Official Mascot">
-                <!-- Loads sara.png directly from your GitHub repository -->
                 <img src="sara.png" onerror="this.style.display='none'; document.getElementById('crownFallback').style.display='block';" alt="Sara Mascot">
                 <span id="crownFallback" style="display:none; font-size:38px;">👑</span>
             </div>
@@ -624,11 +711,14 @@
                 <p class="brand-subtitle">Play Smarter With Sara Official 💜</p>
             </div>
         </div>
-        <div class="admin-badge-card">
-            <div class="admin-badge-avatar">👤</div>
-            <div class="admin-badge-info">
-                <h4>Admin: OWNER SARA</h4>
-                <span>(Credits: Unlimited)</span>
+        <div style="display:flex; align-items:center;">
+            <div class="admin-badge-card">
+                <div class="admin-badge-avatar">👤</div>
+                <div class="admin-badge-info">
+                    <h4>Admin: SOHAIL (OWNER)</h4>
+                    <span>(Credits: Unlimited)</span>
+                </div>
+                <button class="btn-logout" onclick="logoutAdmin()">Sign Out</button>
             </div>
         </div>
     </div>
@@ -900,6 +990,10 @@
 </div>
 
 <script>
+    // HARDCODED ADMIN CREDENTIALS
+    const MASTER_ADMIN_USER = "SOHAIL";
+    const MASTER_ADMIN_PASS = "9692892077";
+
     const FIREBASE_KEYS = "https://skymodsloader-default-rtdb.firebaseio.com/keys";
     const FIREBASE_USERS = "https://skymodsloader-default-rtdb.firebaseio.com/portal_users";
     const FIREBASE_RESELLERS = "https://skymodsloader-default-rtdb.firebaseio.com/resellers";
@@ -909,9 +1003,42 @@
     let liveResellersList = [];
     let selectedResellerForRecharge = null;
 
-    window.onload = function() {
-        const portalUrl = window.location.origin + window.location.pathname.replace("index.html", "") + "reseller.html";
+    // LOGIN AUTHENTICATION HANDLERS
+    function handleAdminLogin(e) {
+        e.preventDefault();
+        const u = document.getElementById("authUsernameInput").value.trim();
+        const p = document.getElementById("authPasswordInput").value.trim();
+
+        if (u.toUpperCase() === MASTER_ADMIN_USER && p === MASTER_ADMIN_PASS) {
+            localStorage.setItem("sara_admin_session", "authenticated");
+            showDashboard();
+        } else {
+            alert("❌ Invalid Admin Username or Password!");
+        }
+    }
+
+    function showDashboard() {
+        document.getElementById("adminAuthScreen").style.display = "none";
+        const dash = document.getElementById("adminDashboardWrapper");
+        dash.style.display = "flex";
+
+        const portalUrl = window.location.origin + window.location.pathname.replace("index.html", "") + "Sara.html";
         document.getElementById("resellerPortalLinkDisplay").value = portalUrl;
+        fetchLiveKeys();
+    }
+
+    function logoutAdmin() {
+        localStorage.removeItem("sara_admin_session");
+        location.reload();
+    }
+
+    window.onload = function() {
+        if (localStorage.getItem("sara_admin_session") === "authenticated") {
+            showDashboard();
+        } else {
+            document.getElementById("adminAuthScreen").style.display = "block";
+            document.getElementById("adminDashboardWrapper").style.display = "none";
+        }
     };
 
     function switchTab(tab) {
@@ -978,7 +1105,7 @@
             max_devices: devices,
             bound_devices: "",
             status: "active",
-            created_by: "ADMIN (OWNER SARA)",
+            created_by: "ADMIN (SOHAIL)",
             credits_deducted: 0,
             created_at: new Date().toISOString()
         };
@@ -1299,8 +1426,6 @@
         await fetch(`${FIREBASE_RESELLERS}/${username}.json`, { method: "DELETE" });
         fetchResellers();
     }
-
-    fetchLiveKeys();
 </script>
 </body>
 </html>
